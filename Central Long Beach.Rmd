@@ -52,8 +52,8 @@ Column {data-width=700}
     
 ### Central Long Beach Best Start Geography
 
-Below is the map of the Best Start Geography for Central Long Beach (using this text as testing for Github)
-    
+testing 
+
 ```{r, echo=FALSE, message=FALSE}
 
 
