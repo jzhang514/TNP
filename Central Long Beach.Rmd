@@ -18,6 +18,9 @@ library(highcharter)
 library(dygraphs)
 library(knitr)
 
+knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
+)
+
 setwd("W:/Project/RDA Team/TNP/R")
 
 #loads the PostgreSQL driver
@@ -51,8 +54,6 @@ Column {data-width=700}
 -------------------------------------
     
 ### Central Long Beach Best Start Geography
-
-testing testing text text blahbalhablah. HOW DO i push this update to my live github page link ?!
 
 ```{r, echo=FALSE, message=FALSE}
 
