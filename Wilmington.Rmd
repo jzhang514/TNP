@@ -1,0 +1,714 @@
+---
+title: "Wilmington (TNP Deliverable Prototype)"
+output: 
+  flexdashboard::flex_dashboard:
+    vertical_layout: fill
+    theme: flatly
+    social: [ "twitter", "facebook", "menu" ]
+    navbar:
+      - { title: "Additional Links", href: "https://jzhang514.github.io/TNP/Additional-Resources", align: right }
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr)
+library(sf)
+library(RPostgreSQL)
+library(highcharter)
+library(dygraphs)
+library(knitr)
+
+knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
+)
+
+setwd("W:/Project/RDA Team/TNP/R")
+
+#loads the PostgreSQL driver
+drv <- dbDriver("PostgreSQL")
+
+
+# create connection
+con <- dbConnect(drv, dbname = "f5la",
+                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                 user = "postgres", password = "password")
+
+##do it the new private protected way
+# con <- dbConnect(drv, dbname = Sys.getenv("dbname"),
+#                    host = Sys.getenv("host"), port = 5432,
+#                    user = Sys.getenv("userid"), 
+#                    password = Sys.getenv("pwd"))
+
+
+
+
+
+
+```
+
+Introduction
+=====================================
+
+
+Column {data-width=700}
+-------------------------------------
+    
+### Wilmington Best Start Geography
+    
+```{r, echo=FALSE, message=FALSE}
+
+library(leaflet)
+library(tigris)
+library(RPostgreSQL)
+library(sp)
+library(sf)
+library(rgdal)
+library(rpostgis)
+library(RColorBrewer)
+
+##############################Map Data######################################
+
+
+######Layer 1: BSC###########
+
+bsc<-pgGetGeom(con, query="SELECT * FROM f5la_best_start_geographies where best_start ilike 'Central Long Beach' or 
+         best_start ilike 'Wilmington'")
+
+#convert to sf 
+bsc<-st_as_sf(bsc)
+
+####transform bsc shapefile for leaflet
+
+bsc<-st_transform(bsc, CRS('+proj=longlat +datum=WGS84'))
+
+####Add XY coordinates to bsc spatial df
+
+## find centroid coordinates
+bsc_cnt = st_centroid(bsc)
+bsc_crd = data.frame(st_coordinates(bsc_cnt))
+
+#add ID column to each df and spatial df for joining
+bsc$ID <- seq.int(nrow(bsc))
+bsc_crd$ID <- seq.int(nrow(bsc_crd))
+
+##join spatial frame with data frame to get the XY columns into the spatial frame
+
+bsc<-geo_join(bsc, bsc_crd, 'ID', 'ID',
+              how = "left")
+
+#create label 
+bsc_label<-paste(bsc$best_start)
+
+
+#######Map#########
+
+
+leaflet(data=bsc)%>%
+  
+
+  #bsc layer
+  
+  addPolygons(data=bsc, color="#B0EFDF", weight=1.5, opacity = 0, fillOpacity = .6,
+              
+               label=as.character(bsc$best_start)) %>%
+  
+  addLabelOnlyMarkers(data=bsc,  ~X, ~Y, label =  ~as.character(bsc_label), 
+  labelOptions = labelOptions(noHide= T, direction = 'top', textOnly = T,
+                              style=list("font-size"="12px", "color"="black",  "font-weight" = "bold")))%>%
+  
+  
+  #base and view
+  addProviderTiles("CartoDB.Voyager")%>%
+  setView( -118.261323, 33.772831, zoom = 13)
+  
+
+
+
+
+
+```
+   
+Column {data-width=300}
+-------------------------------------
+   
+### Description of Wilmington
+
+> Duis interdum ante mauris, scelerisque placerat magna dictum et. Suspendisse dignissim augue vel nisi consequat pulvinar. Sed dictum pretium dui, non fermentum nibh lacinia vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sem urna, tincidunt vel porta quis, ornare eu leo. Quisque non tortor nec felis tempus hendrerit. Nunc vel urna risus.
+
+```{r}
+```
+
+
+### Our mission is to build the capacity of nonprofits so they can make positive change in their communities. Our vision is successful nonprofits supporting thriving communities.
+```{r out.width = "30%"}
+
+knitr::include_graphics("W:/Project/RDA Team/TNP/R/TNP_logo.png")
+
+```
+
+
+Overview
+=====================================
+
+Overview 
+-----------------------------------------------------------------------
+> Duis interdum ante mauris, scelerisque placerat magna dictum et. Suspendisse dignissim augue vel nisi consequat pulvinar. Sed dictum pretium dui, non fermentum nibh lacinia vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sem urna, tincidunt vel porta quis, ornare eu leo. Quisque non tortor nec felis tempus hendrerit. Nunc vel urna risus.
+
+> Phasellus id risus vel turpis egestas euismod. Vestibulum bibendum lorem vitae velit pellentesque vestibulum. Sed vehicula justo tortor, ut lacinia dui suscipit id. Vivamus vel nulla laoreet, pulvinar leo tincidunt, consectetur leo. Nam dolor lectus, tempus sed ipsum a, auctor pharetra augue. Maecenas interdum ornare libero non venenatis. Duis tincidunt ipsum et nisl ultricies rutrum. Phasellus semper dui vel ante varius, at tincidunt arcu viverra. Duis interdum libero felis, in gravida nibh auctor ac. Maecenas et suscipit felis. Nullam id elementum ex. Aenean tempor erat a felis sollicitudin consectetur. Sed ac semper ex. Integer quis facilisis sapien.
+
+> Donec congue pulvinar ex, a dictum diam finibus consequat. Aliquam sit amet neque tortor. Donec imperdiet vitae dolor quis auctor. Vivamus at enim ultricies justo tempus elementum ut non nisi. In vulputate varius quam sit amet volutpat. Suspendisse sed bibendum tellus. Donec tristique feugiat ligula vitae sollicitudin.
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### Duis interdum ante
+
+- Non elementum orci lorem sit amet sapien
+- Vestibulum bibendum lorem vitae velit pellentesque 
+- Cras eget accumsan nulla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae
+- Phasellus id risus vel turpis egestas euismod. Vestibulum bibendum lorem vitae 
+- velit pellentesque vestibulum. Sed vehicula justo tortor, ut lacinia dui suscipit id. Vivamus vel nulla laoreet, pulvinar - leo tincidunt, consectetur leo. Nam dolor lectus, tempus sed ipsum a, auctor pharetra augue. Maecenas interdum ornare
+
+### About The Nonprofit Partnership 
+> Our mission is to build the capacity of nonprofits so they can make positive change in their communities.
+
+![TNP.](W:/Project/RDA Team/TNP/R/TNP_logo.png)
+
+
+Demographics
+=====================================
+
+Demographics {data-width=600}
+-----------------------------------------------------------------------
+
+### Children Age 0 to 5
+
+
+```{r}
+
+# create connection
+con <- dbConnect(drv, dbname = "tnp",
+                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                 user = "postgres", password = "password")
+
+
+children<-dbGetQuery(con, "SELECT * FROM ct_youngchildren_2018")
+
+
+children%>%
+  hchart(type = "bar", hcaes(x = best_start , y = pct_under_five),
+    tooltip = list(pointFormat = "Percentage of Children Age 0-5: {point.pct_under_five:,.1f}%<br>
+    Number of Children Age 0-5: {point.num_under_five:,.0f}"))%>%
+      hc_tooltip(crosshairs = TRUE)%>%
+  hc_xAxis(title = list(text = ""))%>%
+    hc_yAxis(title = list(text = "Percentage of Children Age 0 to 5"))%>%
+  hc_title(
+    text = "Children Age 0 to 5",
+    margin = 20,
+    align = "left",
+    style = list(useHTML = TRUE, fontWeight="bold")
+    )
+
+
+
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+
+### Wilmington
+
+```{r}
+# create connection
+con <- dbConnect(drv, dbname = "tnp",
+                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                 user = "postgres", password = "password")
+
+race<-dbGetQuery(con, "SELECT * FROM ct_raceethnicity_2018")
+
+library(tidyr)
+
+
+race_clb <- gather(race, measure, value, num_white:pct_twoormore, factor_key=TRUE)%>%
+  filter(grepl("pct", measure))%>%
+  filter(grepl("Wilmington", best_start))%>%
+  mutate(variable=ifelse(measure %in% 'pct_white', 'White',
+                         ifelse(measure %in% 'pct_black_afam', "Black",
+                                ifelse(measure %in% 'pct_aian', "AIAN",
+                                       ifelse(measure %in% 'pct_asian', "Asian",
+                                              ifelse(measure %in% 'pct_nativepi', "Native Pacific Islander",
+                                                     ifelse(measure %in% 'pct_hispaniclatino', "Hispanic/Latinx",
+                                                            ifelse(measure %in% 'pct_other', "Other Race",
+                                                                   ifelse(measure %in% 'pct_twoormore', "Two or more Races", "Blank")))))))))
+
+#tree map
+
+library(RColorBrewer)
+library(viridis)
+
+
+
+race_clb%>%
+  hchart(type = "treemap", hcaes(x = variable, value = value, color=value),
+   tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
+      hc_tooltip(crosshairs = TRUE)%>%
+  hc_colorAxis(stops = color_stops(colors = viridis::plasma(10)))
+
+
+```
+
+### Los Angeles County 
+
+```{r}
+
+race_lac <- gather(race, measure, value, num_white:pct_twoormore, factor_key=TRUE)%>%
+  filter(grepl("pct", measure))%>%
+  filter(grepl("LA County", best_start))%>%
+  mutate(variable=ifelse(measure %in% 'pct_white', 'White',
+                         ifelse(measure %in% 'pct_black_afam', "Black",
+                                ifelse(measure %in% 'pct_aian', "AIAN",
+                                       ifelse(measure %in% 'pct_asian', "Asian",
+                                              ifelse(measure %in% 'pct_nativepi', "Native Pacific Islander",
+                                                     ifelse(measure %in% 'pct_hispaniclatino', "Hispanic/Latinx",
+                                                            ifelse(measure %in% 'pct_other', "Other Race",
+                                                                   ifelse(measure %in% 'pct_twoormore', "Two or more Races", "Blank")))))))))
+
+
+
+race_lac%>%
+  hchart(type = "treemap", hcaes(x = variable, value =value, color = value),
+         tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
+      hc_tooltip(crosshairs = TRUE)%>%
+    hc_colorAxis(stops = color_stops(colors = viridis::viridis(10)))%>%
+   hc_title(
+    text = "26.3% of families in Los Angeles County are white, making them the second most represented racial group in the county behind Hispanic/Latinx families.",
+    margin = 20,
+    align = "left",
+    style = list(useHTML = TRUE, fontWeight="bold")
+    )%>%
+   hc_subtitle(
+    text =  '<a href="https://data.census.gov/cedsci/">ACS 2018 5-Year Estimates</a>',
+     style = list( fontWeight = "bold"),
+    align = "left"
+  )%>%
+  hc_legend(enabled = FALSE)
+
+```
+
+
+Health 
+=====================================
+
+Column 
+-----------------------------------------------------------------------
+
+### Uninsured Rate for Children Age 0 to 8
+
+```{r,  fig.width=2, fig.height=4}
+
+#loads the PostgreSQL driver
+drv <- dbDriver("PostgreSQL")
+
+
+# create connection
+con <- dbConnect(drv, dbname = "tnp",
+                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                 user = "postgres", password = "password")
+
+
+uninsured<-dbGetQuery(con, "SELECT * FROM pumas_uninsur_chil0_8 WHERE
+                      best_start ILIKE 'Central Long Beach' 
+                      OR best_start ILIKE 'LA County' 
+                      OR best_start ILIKE 'Wilmington'")
+  
+ 
+ 
+library(kableExtra)
+
+kable(uninsured, digits=1, format.args = list(big.mark = ","), col.names = c("", "Total Uninsured", "Total Population", "Percent Uninsured"))%>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+
+```
+
+### Total Uninsured Population 
+
+```{r fig.width=10, fig.height=7}
+
+uninsured<-dbGetQuery(con, "SELECT * FROM ct_uninsured_2018")
+
+uninsured_clb<-uninsured%>%
+  gather(measure, value, tot_uninsured:pct_uninsured)%>%
+ filter(grepl("tot", measure))%>%
+  filter(grepl("Central Long Beach", best_start))%>%
+  mutate(variable=ifelse(measure %in% 'tot_hh', 'Total Number of Households',
+                         ifelse(measure %in% 'tot_uninsured', 'Total Number of Uninsured Households', 'Blank')))
+
+#define colors
+cols=c("#D63CC3", "#FAE7F8")
+
+uninsured_clb %>%
+  hchart(
+    "pie", hcaes(x = variable, y = value),
+    name = "Uninsured Population in Central Long Beach",
+    tooltip = list(pointFormat = "Uninsured Percentage = 16.7%")
+    )%>%
+  hc_colorAxis(minColor="#EE65DD", maxColor = "#65DDEE"
+)%>%
+      hc_legend(enabled = FALSE)%>%
+  hc_title(
+    text = "16.7% of Central Long Beach households are uninsured. This is approximately 6% higher than the uninsured rate in Los Angeles County",
+    margin = 20,
+    align = "left",
+    style = list(useHTML = TRUE, fontWeight="bold")
+    )%>%
+   hc_subtitle(
+    text =  '<a href="https://data.census.gov/cedsci/">ACS 2018 5-Year Estimates</a>',
+     style = list( fontWeight = "bold"),
+    align = "left"
+  )
+
+
+```
+
+
+Column 
+-------------------------------------
+
+### Community Voices
+
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam dapibus libero quis massa imperdiet, et scelerisque sem blandit. Integer sagittis massa vel rhoncus placerat. Praesent tristique eleifend purus ut bibendum. Proin tempor consectetur consequat. Nam id egestas metus. Duis malesuada, nibh ut fringilla malesuada, libero est ultricies lectus, eu pharetra tellus magna a tortor. Phasellus tempus magna libero, ac lobortis risus ullamcorper at. Suspendisse imperdiet ut ex non condimentum. Donec nec porta mauris, ut tincidunt diam. Aenean vitae sodales sem. Cras laoreet interdum egestas.
+
+> Ut dignissim gravida enim, vitae eleifend nulla viverra eget. Fusce posuere lectus et enim tincidunt, sit amet varius ex varius. Duis mollis sem augue, eget imperdiet neque efficitur eu. Nulla malesuada ut turpis bibendum molestie. Phasellus fringilla malesuada commodo. Morbi risus est, sodales ac dolor vitae, lacinia pretium nisl. Aliquam pulvinar condimentum nibh ut faucibus. Etiam dolor libero, sollicitudin at metus ac, molestie dignissim elit. Aenean sodales elit ex, et lacinia augue molestie in. Curabitur et mi elit. Donec quis odio erat. In purus lorem, tempus eget semper sed, malesuada sed orci. Donec molestie ut enim cursus mattis. Phasellus nec lorem nisl. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+
+> Donec non faucibus tortor. In egestas elementum metus vel consectetur. Duis faucibus quam leo, vitae feugiat augue convallis sed. In euismod lacinia massa at tristique. Nunc ut nibh quis enim elementum fringilla eu et orci. Phasellus eu nisl non magna bibendum faucibus. Vestibulum quis quam vel enim faucibus semper. Fusce consequat urna quis lectus lobortis, nec porta nisl suscipit. Vestibulum velit ipsum, finibus sit amet justo tincidunt, laoreet rutrum erat.
+
+> Donec nec massa consequat, imperdiet sem eget, mattis mi. Mauris faucibus tellus ut ultricies blandit. Proin elementum vehicula bibendum. Vivamus et purus id dolor imperdiet laoreet a at ipsum. Duis at facilisis ipsum. Suspendisse hendrerit sollicitudin nunc nec vehicula. Suspendisse sit amet arcu sem. Phasellus eros massa, lobortis eget cursus ac, viverra ut erat. Morbi mauris mauris, accumsan id fermentum in, convallis vitae dolor. Etiam ante turpis, finibus et libero vitae, laoreet aliquet leo.
+
+> Fusce volutpat metus eu lacus congue vulputate eu vitae eros. Donec consequat orci non felis vulputate rhoncus. Donec ut vulputate mauris. Sed sit amet convallis nulla, euismod pharetra ipsum. In iaculis dui et ipsum auctor interdum. Donec eleifend libero metus, pulvinar rutrum nulla egestas et. Proin eget facilisis diam. Morbi imperdiet lorem lectus, eget varius erat tempor non. Curabitur rhoncus dui vitae leo congue, et interdum sapien congue. Mauris sit amet imperdiet justo, in ultrices nulla. Aenean venenatis leo pellentesque sem cursus bibendum tristique non sapien. Etiam condimentum tempor semper.
+
+> Aliquam ac ullamcorper eros. Cras hendrerit vestibulum ante ac pretium. Vestibulum gravida facilisis erat, ac fermentum nisi hendrerit ac. Nullam semper dignissim nisi ut efficitur. Vestibulum congue gravida ipsum eu ornare. Proin condimentum mattis dignissim. Vivamus eleifend neque purus, in dictum nibh imperdiet a. Ut suscipit, ipsum non dictum semper, sapien nunc ullamcorper dui, eget ullamcorper libero dui quis ipsum. Pellentesque vitae lacus ut odio elementum ullamcorper quis nec purus. Maecenas condimentum nisi ac tortor euismod placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nunc quis egestas elit. Nunc semper neque at volutpat finibus. Proin tincidunt lectus sed lorem auctor fringilla.
+
+```{r}
+```
+
+
+
+Built Environment 
+=====================================
+
+Education 
+===================================== 
+
+Column {data-height=900}
+-------------------------------------
+
+### Unmet Need in Early Childcare Education (ECE) for Infant Toddlers
+
+```{r}
+
+ece_it<-dbGetQuery(con, "SELECT * FROM zip_unmet_ece_it_2018")%>%
+  gather(measure, value, children_it:pct_unmet_need_children_it)%>%
+  filter(!grepl("pct", measure))%>%
+  filter(!grepl("unmet_need_children_it", measure))%>%
+  filter(!grepl("LA County", best_start))%>%
+  mutate(variable=ifelse(measure %in% 'children_it', 'Total Children',
+                         ifelse(measure %in% 'enrolled_children_it', 'Total Enrolled',
+                                ifelse(measure %in% 'eligible_children_it', 'Total Eligible', 'Blank'))))
+  
+
+
+
+
+#get order correct for stacking
+ece_it <- within(ece_it, variable <- factor(variable,
+                                           levels=c("Total Children","Total Enrolled", "Total Eligible")))
+
+
+
+
+ece_it %>% 
+  hchart(
+    'column', hcaes(x = 'best_start', y = 'value', group = 'variable'),
+    stacking = "normal"
+    ) %>%
+  hc_colors(c("#C965EE", "#EEC965", "#65EEC9"))%>%
+  hc_xAxis(title = list(text = ""))%>%
+    hc_yAxis(title = list(text = ""))%>%
+  hc_title(
+    text = "In both Central Long Beach and Wilmington, approximately 84% of infant toddlers who are eligile to enroll in subsidized ECE programs do not enroll",
+    margin = 20,
+    align = "left",
+    style = list(useHTML = TRUE, fontWeight="bold")
+    )%>%
+  hc_subtitle(
+    text =  '<a href="https://elneedsassessment.org/">Early Learning Needs Assessment Tool, American Institutes for Research</a>',
+     style = list( fontWeight = "bold"),
+    align = "left"
+  )
+
+
+
+```
+
+Column {data-width=400}
+-------------------------------------
+
+### Community Voices
+
+> Nullam consequat faucibus sem vitae molestie. Duis porttitor est mi, rutrum mattis nulla fringilla sit amet. Vestibulum faucibus metus orci, eu scelerisque nisi consectetur vel. Ut mattis, mi a lobortis volutpat, velit libero dictum leo, sed facilisis sapien sapien hendrerit lacus. Ut egestas facilisis felis at fringilla. Vivamus a tellus commodo, tristique nulla ut, faucibus lorem. Donec tincidunt venenatis magna, vitae ornare lacus facilisis ac. Aliquam in nibh vel massa blandit malesuada et sed mi.Aliquam erat volutpat. In egestas elementum nibh sagittis iaculis. Donec ut nunc in nisi viverra laoreet. Quisque vulputate urna libero, imperdiet tristique erat viverra eget. Nam ullamcorper, ipsum a lacinia tincidunt, tortor ligula sodales odio, at tincidunt arcu diam et enim. Etiam in nunc eget urna convallis cursus at eu ex. Maecenas eleifend ut arcu in fringilla. Nunc imperdiet lobortis mauris vel ultrices. Duis finibus turpis lectus, ut congue sapien tincidunt et. Suspendisse velit nulla, scelerisque a odio eget, sagittis pulvinar leo. Nunc tempor nisl nec elit dignissim, congue semper tortor molestie. Nullam vel pharetra nisl.
+
+```{r}
+```
+
+
+Economic Wellness {data-orientation=rows}
+=====================================
+
+Row {data-height=350}
+-------------------------------------
+
+### Median Household Income in Long Beach and the Best Start Geographies by Census Tract
+
+```{r}
+library(tigris)
+library(leaflet)
+library(tigris)
+library(RPostgreSQL)
+library(sp)
+library(sf)
+library(rgdal)
+library(rpostgis)
+library(RColorBrewer)
+
+#set working directory
+setwd("W:/Project/RDA Team/First5LA/First 5 LA Regional Report")
+
+#################################LA Census Tracts##########################
+
+########Prep Data: Census Tract Shapefile
+
+#read census tract shapefiles data
+ct <- st_read(
+  "W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Shapes/tl_2019_06_tract_pj_clip.shp", quiet=TRUE)
+
+####Add XY coordinates to bsc spatial df
+## find centroid coordinates
+ct_cnt = st_centroid(ct)
+ct_crd = data.frame(st_coordinates(ct_cnt))
+
+#add ID column to each df and spatial df for joining
+ct$ID <- seq.int(nrow(ct))
+ct_crd$ID <- seq.int(nrow(ct_crd))
+
+##join spatial frame with data frame to get the XY columns into the spatial frame
+
+ct<-geo_join(ct, ct_crd, 'ID', 'ID',
+  how = "left")
+
+
+#######Prep Data: ACS Median HH Income 
+
+##read median HH data from ACS
+
+income<-read.csv(file ="W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Data/ACS_17_5YR_S1903/ACS_17_5YR_S1903_with_ann.csv", header=TRUE, sep=",", strip.white = TRUE)
+
+#remove annotation row 
+income = income[-1,]
+
+
+#rename income column name for clarity and subset for fields of interest
+income <-income[,c(1:3, 8)]
+colnames(income)[colnames(income)=="HC03_EST_VC02"] <- "income_medianhh"
+
+##income fields of interest from acs table:
+####HC03_EST_VC02: Median Income (dollars); Estimate; Households 
+
+#rename column 'GEO.id' to 'Geo_id' in income-csv to match column name in race-csv for joining
+colnames(income)[colnames(income)=="GEO.id2"] <- "GEO_id2"
+
+##change median hh income to have commas on numbers with more than 3 digits  
+income$income_medianhh<-prettyNum(income$income_medianhh, big.mark=",", preserve.width="none")
+
+
+########Prep Data: ACS Race/Ethnicity
+
+##read race data from ACS
+race<-read.csv(file="W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Data/ACS_17_5YR_B03002/ACS_17_5YR_B03002.csv", header=TRUE, sep=",", strip.white = TRUE)
+
+
+##subset race to only include fields of interest & rename column names for clarity
+race <-race[,c(1, 4, 10,26)]
+colnames(race)[colnames(race)=="HD01_VD01"] <- "race_total"
+colnames(race)[colnames(race)=="HD01_VD12"] <- "race_hisplatin"
+colnames(race)[colnames(race)=="HD01_VD04"] <- "race_blackafm"
+
+###Create columns for race percentage
+
+race<-race%>%
+  mutate(hisplatin_pct=race_hisplatin/race_total*100)%>%
+  mutate(blackafm_pct=race_blackafm/race_total*100)%>%
+  mutate(hisplatin_pct=round(hisplatin_pct, digits=2))%>%
+  mutate(blackafm_pct=round(blackafm_pct, digits=2))
+
+##change race_total to have commas on numbers with more than 3 digits  
+
+race$race_total<-prettyNum(race$race_total, big.mark=",", preserve.width="none")
+
+
+##race fields of interest from acs table:
+####HD01_VD01: ESTIMATE; TOTAL (denominator for calculating percentage)
+####HD01_VD12 = ESTIMATE; HISPANIC OR LATINO 
+####HD01_VD04 =ESTIMATE; NOT HISPANIC OR LATINO; BLACK OR AFRICAN AMERICAN ALONE
+
+
+
+#########join ACS race / ethnicity data to ACS Median HH income data
+
+income_race<-merge(income, race, by = "GEO_id2", all = TRUE)
+
+
+##join census tract income_race data to ct spatial dataframe (shapefile)
+
+#add leading 0 to Geo.id2 column in income-race acs data, for joining to census tract shapefile
+income_race$GEO_id2<-paste("0",income_race$GEO_id2, sep="")
+
+#join the ACS race/income data to census tract shapefile
+ct<-geo_join(ct, income_race, 'GEOID', 'GEO_id2',
+  how = "left")
+
+#transform shapefile for leaflet
+ct<-st_transform(ct, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+
+
+########################BSC#################################
+
+########Prep data
+
+bsc <-st_read("W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Shapes/F5LA_BSC_boundaries_2012_pj.shp", quiet=TRUE)
+
+####tranasform bsc shapefile for leaflet
+ 
+bsc<-st_transform(bsc, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+
+####Add XY coordinates to bsc spatial df
+
+## find centroid coordinates
+bsc_cnt = st_centroid(bsc)
+bsc_crd = data.frame(st_coordinates(bsc_cnt))
+
+#add ID column to each df and spatial df for joining
+bsc$ID <- seq.int(nrow(bsc))
+bsc_crd$ID <- seq.int(nrow(bsc_crd))
+
+##join spatial frame with data frame to get the XY columns into the spatial frame
+
+bsc<-geo_join(bsc, bsc_crd, 'ID', 'ID',
+  how = "left")
+
+#create label 
+bsc_label<-paste(bsc$BSC)
+
+########################FINAL Map!!##############################
+
+
+leaflet(height=1000, width=1000) %>%
+  
+  addMapPane("ct_pane", zIndex=485)%>%
+  addMapPane("bsc_pane", zIndex=489)%>%
+  
+  
+  addPolygons(data=ct, color ="#a19f9f", weight = .3, smoothFactor = 0.5,
+    opacity = 1, fillOpacity = 0.1, group = "LA County Census Tracts", highlight=highlightOptions(color= "#8c8b8b", stroke = 2, weight = 3, bringToFront = TRUE),  popup = ~paste0(ct$NAMELSAD, "</br>", "Median Household Income: ","$",ct$income_medianhh, "</br>", "Total Population: ",ct$race_total,"</br>","Hispanic/Latino Population %: ",ct$hisplatin_pct,"</br>","Black/African American Population %: ",ct$blackafm_pct), options = pathOptions(pane = "ct_pane"))%>%
+  
+  addPolygons(data=bsc, color="#21BBB8", weight=2, opacity = 1, fillOpacity =.3, group="Existing BSCs") %>%
+  addLabelOnlyMarkers(data=bsc, ~X, ~Y, label =  ~as.character(bsc_label), labelOptions = labelOptions(noHide= T, direction = 'top', textOnly = T, style=list("font-size"="8px", "color"="black",  "font-weight" = "bold"))) %>%
+
+  addProviderTiles("CartoDB.PositronNoLabels") %>%
+ setView( -118.261323, 33.772831, zoom = 13)
+```
+
+Row 
+-------------------------------------
+
+### LA Times
+
+```{r}
+
+valueBox("The Median Household Income in Wilmington is $40,627",
+         icon = "fas fa-money-bill-wave",
+         href="http://maps.latimes.com/neighborhoods/neighborhood/wilmington/",
+         color="#00CCCC")  
+
+```
+
+
+### LA Times
+
+```{r}
+
+
+valueBox("61.5% of families are renters", 
+         icon = "fas fa-house-user",
+         href="http://maps.latimes.com/neighborhoods/neighborhood/wilmington/",
+         color = "#7955C5") 
+
+```
+
+
+
+Child Safety {data-orientation=rows}
+=====================================
+
+Row {data-height=900}
+-------------------------------------
+    
+### Injuries from Incidents with Law Enforcement
+    
+```{r}
+library(tidyr)
+
+force<-dbGetQuery(con, "SELECT * FROM state_use_of_force_by_race_1618")%>%
+  gather(measure, value, total_pop:nh_twoormor_rate)%>%
+  filter(grepl("_rate", measure))%>%
+  mutate(variable=ifelse(measure %in% 'nh_white_rate', 'White',
+                         ifelse(measure %in% 'total_rate', "Total Rate",
+                                ifelse(measure %in% 'nh_aian_rate', "AIAN",
+                                       ifelse(measure %in% 'nh_api_rate', "Asian Pacific Islander",
+                                              ifelse(measure %in% 'pct_nativepi', "Native Pacific Islander",
+                                                     ifelse(measure %in% 'nh_black_rate', "Black",
+                                                            ifelse(measure %in% 'nh_latino_rate', "Latinx",
+                                                                   ifelse(measure %in% 'nh_twoormor_rate', "Two or more Races", "Blank")))))))))
+
+
+force%>%
+  hchart(type = "bar", hcaes(x = variable , y = value),
+    tooltip = list(pointFormat = "Percentage: {point.value:,.1f}%"))%>%
+      hc_tooltip(crosshairs = TRUE)%>%
+  hc_xAxis(title = list(text = ""))%>%
+    hc_yAxis(title = list(text = "Average Number of Civilians Injured in Law Enforcement Incidents per 100k People"))%>%
+  hc_title(
+    text = "A black person is 7 times more likely to be injured in law enforcement incidents compared to an Asian Pacific Islander person in CA",
+    margin = 20,
+    align = "left",
+    style = list(useHTML = TRUE, fontWeight="bold")
+    )%>%
+   hc_subtitle(
+    text =  '<a href="https://openjustice.doj.ca.gov/">Open Justice Data, California Department of Justice</a>',
+     style = list( fontWeight = "bold"),
+    align = "left"
+  )%>%
+  hc_legend(enabled = FALSE)
+
+
+```
+   
+Row {data-height=300}
+-------------------------------------
+   
+### Community Voices
+
+> Nullam consequat faucibus sem vitae molestie. Duis porttitor est mi, rutrum mattis nulla fringilla sit amet. Vestibulum faucibus metus orci, eu scelerisque nisi consectetur vel. Ut mattis, mi a lobortis volutpat, velit libero dictum leo, sed facilisis sapien sapien hendrerit lacus. Ut egestas facilisis felis at fringilla. Vivamus a tellus commodo, tristique nulla ut, faucibus lorem. Donec tincidunt venenatis magna, vitae ornare lacus facilisis ac. Aliquam in nibh vel massa blandit malesuada et sed mi.Aliquam erat volutpat. In egestas elementum nibh sagittis iaculis. Donec ut nunc in nisi viverra laoreet. Quisque vulputate urna libero, imperdiet tristique erat viverra eget. Nam ullamcorper, ipsum a lacinia tincidunt, tortor ligula sodales odio, at tincidunt arcu diam et enim. Etiam in nunc eget urna convallis cursus at eu ex. Maecenas eleifend ut arcu in fringilla. Nunc imperdiet lobortis mauris vel ultrices. Duis finibus turpis lectus, ut congue sapien tincidunt et. Suspendisse velit nulla, scelerisque a odio eget, sagittis pulvinar leo. Nunc tempor nisl nec elit dignissim, congue semper tortor molestie. Nullam vel pharetra.
+
+```{r}
+```
