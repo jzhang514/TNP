@@ -1,0 +1,88 @@
+---
+title: "Additional Resources"
+output:
+  html_document:
+    number_sections: no
+    theme: flatly
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(highcharter)
+library(knitr)
+library(stringr)
+library(tidyverse)
+
+knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
+)
+
+setwd("W:/Project/RDA Team/TNP/R")
+```
+
+This page is a hub of existing resources that provide data and stories on six topic areas surrounding child wellness: Demographics, Health, Built Environment, Education, Economic Wellness and Child Safety. Centralizing data makes it easier to draw connections between these different topic areas, all of which exist in relation to each other and require investment and in order for children to truly thrive. Drawing the connections is how we can paint a holistic picture of child wellness.
+
+# Demographics
+
+## Additional Data Sources
+
+## Stories
+
+## Website Data
+
+## Website Dataset Download
+
+# Health
+
+## Additional Data Sources
+
+## Stories
+
+## Website Data
+
+## Website Dataset Download
+
+# Built Environment
+
+## Additional Data Sources
+
+## Stories
+
+## Website Data
+
+## Website Dataset Download
+
+# Education
+
+## Additional Data Sources
+
+## Stories
+
+## Website Data
+
+## Website Dataset Download
+
+# Economic Wellness
+
+## Additional Data Sources
+
+## Stories
+
+## Website Data
+
+## Website Dataset Download
+
+# Child Safety
+
+## Additional Data Sources
+
+## Stories
+
+## Website Data
+
+## Website Dataset Download
