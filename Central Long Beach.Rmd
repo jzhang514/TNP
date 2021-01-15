@@ -6,7 +6,7 @@ output:
     theme: flatly
     social: [ "twitter", "facebook", "menu" ]
     navbar:
-      - { title: "Additional Links", href: "https://jzhang514.github.io/f5la/Appendix.html", align: right }
+      - { title: "Additional Links", href: "https://jzhang514.github.io/TNP/Additional-Resources", align: right }
 ---
 
 ```{r setup, include=FALSE}
@@ -479,6 +479,9 @@ Column
 
 ```{r}
 ```
+
+Built Environment 
+=====================================
 
 
 Education 
