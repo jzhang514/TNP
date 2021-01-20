@@ -746,9 +746,66 @@ valueBox("The Median Gross Rent in Long Beach is $1,324",
 Child Safety {data-orientation=rows}
 =====================================
 
-Row {data-height=900}
+Row {data-height=900}{.tabset .tabset-fade}
 -------------------------------------
-    
+
+### Substantiated Child Abuse
+The California child welfare system is known for longstanding racial disparities and disproportionality. California and Los Angeles County have slowly and steadily reduced rates of substantiated child abuse. However, the current state of child welfare is difficult to gauge, because of simultaneous COVID-related increases in risk factors for child abuse and decreases in abuse reporting
+
+
+
+```{r}
+library(highcharter)
+#load CCWIP LA County children with substantiations table
+la_subs <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/Los Angeles County/Children_with_substantiations_LA.csv", fileEncoding = 'UTF-8-BOM') 
+
+#load CCWIP LA County child population table
+la_kids <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/Los Angeles County/Total_Child_Population_LA.csv", fileEncoding = 'UTF-8-BOM')
+
+#load CCWIP LA County maltreatment substantiation rate table
+la_rates <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/Los Angeles County/Substantiations_per_1000_children_LA.csv", fileEncoding = 'UTF-8-BOM') %>%
+  mutate(geoid = "06037",
+         geo_name = "Los Angeles County")
+
+
+#load CCWIP California children with substantiations table
+ca_subs <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/California/Children_with_substantiations_CA.csv", fileEncoding = 'UTF-8-BOM') 
+
+#load CCWIP California child population table
+ca_kids <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/California/Total_Child_Population_CA.csv", fileEncoding = 'UTF-8-BOM')
+
+#load CCWIP California maltreatment substantiation rate table
+ca_rates <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/California/Substantiations_per_1000_children_CA.csv", fileEncoding = 'UTF-8-BOM')%>%
+  mutate(geoid = "06",
+         geo_name = "California") 
+
+
+
+
+
+# graph
+la_rates %>%
+  filter(Ethnic_Group != "Missing")%>%
+  filter(Ethnic_Group != 'Total') %>%
+  rename(Race = Ethnic_Group) %>%
+  rename(Percent = JAN2019_DEC2019) %>%
+  mutate(group = "Incidence of Maltreatment per 1K") %>%
+  arrange(desc(Percent)) %>%
+  hchart('column', hcaes(x = 'Race', y = 'Percent', group = group),  tooltip = list(pointFormat = "Percentage: {point.value:,.1f}%"))%>%
+  hc_title(
+    text = "Black children are at least 2.5 times more likely to maltreatment than children of other races in Los Angeles County",
+    margin = 20,
+    align = "left",
+    style = list(useHTML = TRUE, fontWeight="bold")
+    )%>%
+   hc_subtitle(
+    text =  '<a href="https://ccwip.berkeley.edu/childwelfare/reports/SubstantiationRates/MTSG/r/rts/s">California Child Welfare Indicators Project</a>',
+     style = list( fontWeight = "bold"),
+    align = "left"
+  )
+
+```
+
 ### Injuries from Incidents with Law Enforcement
     
 ```{r}
@@ -789,9 +846,42 @@ force%>%
 
 ```
    
-Row {data-height=300}
+Row {data-height=300}{.tabset .tabset-fade}
 -------------------------------------
-   
+
+### Child Maltreatment 
+
+More than 22,000 LA County children under 18 had substantiated child maltreatment allegations in 2019, the last full year and most local geography for which data are available. With a child population of over 2.2 million children, this equates to a rate of 10.2 substantiated allegations of child abuse per 1,000 children.
+
+```{r}
+
+#make table
+rate_table <- data.frame(
+Geography = c("Los Angeles County", "California"),
+MaltreatedChildren = c(la_subs[ which(la_subs$Ethnic_Group == "Total"), 11], ca_subs[ which(ca_subs$Ethnic_Group == "Total"), 11]),
+ChildrenUnder18 = c(la_kids[ which(la_kids$Ethnic_Group == "Total"), 11], ca_kids[ which(ca_kids$Ethnic_Group == "Total"), 11]),
+MaltreatmentRate =  c(la_rates[ which(la_rates$Ethnic_Group == "Total"), 11], ca_rates[ which(ca_rates$Ethnic_Group == "Total"), 11])
+)
+
+#make numbers have comma separators
+library(scales)
+
+rate_table<-rate_table%>%
+  mutate(MaltreatedChildren=number(MaltreatedChildren, big.mark=","))%>%
+  mutate(ChildrenUnder18=number(ChildrenUnder18, big.mark=","))
+
+#make table
+library(kableExtra)
+library(DT)
+
+# kbl(rate_table, col.names = c("", "Maltreated Children", "Children Under 18", "Maltreatment Rate"))%>%
+#     kable_styling(bootstrap_options = c( "hover", "condensed"))
+
+knitr::kable(rate_table, col.names = c("", "Maltreated Children", "Children Under 18", "Maltreatment Rate"))
+
+
+```
+
 ### Community Voices
 
 > Nullam consequat faucibus sem vitae molestie. Duis porttitor est mi, rutrum mattis nulla fringilla sit amet. Vestibulum faucibus metus orci, eu scelerisque nisi consectetur vel. Ut mattis, mi a lobortis volutpat, velit libero dictum leo, sed facilisis sapien sapien hendrerit lacus. Ut egestas facilisis felis at fringilla. Vivamus a tellus commodo, tristique nulla ut, faucibus lorem. Donec tincidunt venenatis magna, vitae ornare lacus facilisis ac. Aliquam in nibh vel massa blandit malesuada et sed mi.Aliquam erat volutpat. In egestas elementum nibh sagittis iaculis. Donec ut nunc in nisi viverra laoreet. Quisque vulputate urna libero, imperdiet tristique erat viverra eget. Nam ullamcorper, ipsum a lacinia tincidunt, tortor ligula sodales odio, at tincidunt arcu diam et enim. Etiam in nunc eget urna convallis cursus at eu ex. Maecenas eleifend ut arcu in fringilla. Nunc imperdiet lobortis mauris vel ultrices. Duis finibus turpis lectus, ut congue sapien tincidunt et. Suspendisse velit nulla, scelerisque a odio eget, sagittis pulvinar leo. Nunc tempor nisl nec elit dignissim, congue semper tortor molestie. Nullam vel pharetra.
