@@ -3,11 +3,18 @@ title: "Central Long Beach (TNP Deliverable Prototype)"
 output: 
   flexdashboard::flex_dashboard:
     vertical_layout: fill
+    css: styles.css
     theme: flatly
     social: [ "twitter", "facebook", "menu" ]
     navbar:
       - { title: "Additional Links", href: "https://jzhang514.github.io/TNP/Additional-Resources", align: right }
 ---
+
+<style type="text/css">
+  body{
+  font-family: Franklin Gothic;
+}
+</style>
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
@@ -17,6 +24,13 @@ library(RPostgreSQL)
 library(highcharter)
 library(dygraphs)
 library(knitr)
+library(tidyr)
+library(scales)
+library(DT)
+library(kableExtra)
+library(RColorBrewer)
+library(viridis)
+
 
 knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
 )
@@ -40,9 +54,48 @@ con <- dbConnect(drv, dbname = "tnp",
 #                    password = Sys.getenv("pwd"))
 
 
+```
+
+```{r include=FALSE}
+
+###current colors: flatly theme -turquoise compound
 
 
+##colors as a vector
 
+cols=c("#0AB5F2", "#304E59", "#1BBF91","#C7574E", "#F20A40")
+
+cols3=c("#0AB5F2", "#F20A40", "#304E59")
+
+####MAKE MY HC THEME###
+
+  thm <- hc_theme(
+  colors = c("#304E59","#0AB5F2",  "#1BBF91","#C7574E", "#F20A40"),
+  chart = list(
+    backgroundColor = ""
+  ),
+  title = list(
+    style = list(
+      color = "#333333",
+      fontFamily = "Franklin Gothic Condensed"
+    )
+  ),
+  subtitle = list(
+    style = list(
+      color = "#666666",
+      fontFamily = "Franklin Gothic"
+    )
+  ),
+  legend = list(
+    itemStyle = list(
+      fontFamily = "Franklin Gothic",
+      color = "black"
+    ),
+    itemHoverStyle = list(
+      color = "gray"
+    )
+  )
+)
 
 ```
 
@@ -61,12 +114,12 @@ Column {data-width=700}
 ##############################Map Data######################################
 library(leaflet)
 library(tigris)
+options(tigris_use_cache = TRUE)
 library(RPostgreSQL)
 library(sp)
 library(sf)
 library(rgdal)
 library(rpostgis)
-library(RColorBrewer)
 
 ######Layer 1: BSC###########
 
@@ -107,7 +160,7 @@ leaflet(data=bsc)%>%
 
   #bsc layer
   
-  addPolygons(data=bsc, color="#B0EFDF", weight=1.5, opacity = 0, fillOpacity = .6,
+  addPolygons(data=bsc, color="#1BBF91", weight=1.5, opacity = 0, fillOpacity = .6,
                label=as.character(bsc$best_start)) %>%
   
   addLabelOnlyMarkers(data=bsc,  ~X, ~Y, label =  ~as.character(bsc_label), 
@@ -130,14 +183,6 @@ Column {data-width=700} {.mobile}
 
 
 ##############################Map Data######################################
-library(leaflet)
-library(tigris)
-library(RPostgreSQL)
-library(sp)
-library(sf)
-library(rgdal)
-library(rpostgis)
-library(RColorBrewer)
 
 ######Layer 1: BSC###########
 
@@ -245,16 +290,10 @@ Demographics {data-width=500}
 
 ```{r}
 
-# create connection
-con <- dbConnect(drv, dbname = "tnp",
-                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
-                 user = "postgres", password = "password")
-
-
 children<-dbGetQuery(con, "SELECT * FROM ct_youngchildren_2018")
 
 
-children%>%
+hc<-children%>%
   hchart(type = "bar", hcaes(x = best_start , y = pct_under_five),
     tooltip = list(pointFormat = "Percentage of Children Age 0-5: {point.pct_under_five:,.1f}%<br>
     Number of Children Age 0-5: {point.num_under_five:,.0f}"))%>%
@@ -274,6 +313,10 @@ children%>%
   )%>% 
   hc_legend(enabled = FALSE)
 
+#view graph
+
+ hc_add_theme(hc, thm)
+
 
 ```
 
@@ -285,14 +328,10 @@ Column {data-width=450}
 ### Central Long Beach  
 
 ```{r}
-# create connection
-con <- dbConnect(drv, dbname = "tnp",
-                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
-                 user = "postgres", password = "password")
 
 race<-dbGetQuery(con, "SELECT * FROM ct_raceethnicity_2018")
 
-library(tidyr)
+
 
 
 race_clb <- gather(race, measure, value, num_white:pct_twoormore, factor_key=TRUE)%>%
@@ -310,16 +349,14 @@ race_clb <- gather(race, measure, value, num_white:pct_twoormore, factor_key=TRU
 
 #tree map
 
-library(RColorBrewer)
-library(viridis)
 
 
 
-race_clb%>%
+hc<-race_clb%>%
   hchart(type = "treemap", hcaes(x = variable, value = value, color=value),
    tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
       hc_tooltip(crosshairs = TRUE)%>%
-  hc_colorAxis(stops = color_stops(colors = viridis::plasma(10)))%>%
+  hc_colorAxis(stops = color_stops(n=5, colors = c("#087355", "#3DFFC8", "#1BBF91","#731A00", "#BF401B")))%>%
      hc_title(
     text = "61.3% of families in Central Long Beach are Hispanic/Latinx. The second largest group of families are Asian at 14%",
     margin = 20,
@@ -332,6 +369,11 @@ race_clb%>%
     align = "left"
   )%>%
   hc_legend(enabled = FALSE)
+
+#view graph
+
+hc_add_theme(hc, thm)
+
 ```
 
 ### Los Angeles County  
@@ -352,11 +394,11 @@ race_lac <- gather(race, measure, value, num_white:pct_twoormore, factor_key=TRU
 
 
 
-race_lac%>%
+hc<-race_lac%>%
   hchart(type = "treemap", hcaes(x = variable, value =value, color = value),
          tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
       hc_tooltip(crosshairs = TRUE)%>%
-    hc_colorAxis(stops = color_stops(colors = viridis::viridis(10)))%>%
+    hc_colorAxis(stops = color_stops(colors = c("#087355", "#3DFFC8", "#1BBF91","#731A00", "#BF401B")))%>%
    hc_title(
     text = "26.3% of families in Los Angeles County are white, making them the second most represented racial group in the county behind Hispanic/Latinx families.",
     margin = 20,
@@ -369,6 +411,11 @@ race_lac%>%
     align = "left"
   )%>%
   hc_legend(enabled = FALSE)
+
+#view graph with theme
+
+hc_add_theme(hc, thm)
+
 
 ```
 Source: [ACS 2018 5-Year Estimates](https://data.census.gov/cedsci/)
@@ -386,23 +433,13 @@ Column
 
 valueBox("4.2% of Children Age 0-8 in Long Beach are Uninsured",
          href="https://data.census.gov/cedsci/",
-         color="#00CCCC")  
+         color="#F20A40")  
 
 ```
 
 ### Uninsured Rate for Children Age 0 to 8
 
 ```{r,  fig.width=2, fig.height=4}
-
-#loads the PostgreSQL driver
-drv <- dbDriver("PostgreSQL")
-
-
-# create connection
-con <- dbConnect(drv, dbname = "tnp",
-                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
-                 user = "postgres", password = "password")
-
 
 uninsured<-dbGetQuery(con, "SELECT * FROM pumas_uninsur_chil0_8 WHERE
                       best_start ILIKE 'Central Long Beach' 
@@ -411,7 +448,6 @@ uninsured<-dbGetQuery(con, "SELECT * FROM pumas_uninsur_chil0_8 WHERE
   
  
  
-library(kableExtra)
 
 kable(uninsured, digits=1, format.args = list(big.mark = ","), col.names = c("", "Total Uninsured", "Total Population", "Percent Uninsured"))%>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
@@ -432,17 +468,14 @@ uninsured_clb<-uninsured%>%
   mutate(variable=ifelse(measure %in% 'tot_hh', 'Total Number of Households',
                          ifelse(measure %in% 'tot_uninsured', 'Total Number of Uninsured Households', 'Blank')))
 
-#define colors
-cols=c("#D63CC3", "#FAE7F8")
 
-uninsured_clb %>%
+hc<-uninsured_clb %>%
   hchart(
     "pie", hcaes(x = variable, y = value),
     name = "Uninsured Population in Central Long Beach",
     tooltip = list(pointFormat = "Uninsured Percentage = 16.7%")
     )%>%
-  hc_colorAxis(minColor="#EE65DD", maxColor = "#65DDEE"
-)%>%
+  # hc_colorAxis(minColor="#BF401B", maxColor = "#1BBF91")%>%
       hc_legend(enabled = FALSE)%>%
   hc_title(
     text = "16.7% of Central Long Beach households are uninsured. This is approximately 6% higher than the uninsured rate in Los Angeles County",
@@ -455,6 +488,10 @@ uninsured_clb %>%
      style = list( fontWeight = "bold"),
     align = "left"
   )
+
+#view graph
+
+ hc_add_theme(hc, thm)
 
 
 ```
@@ -514,12 +551,12 @@ ece_it <- within(ece_it, variable <- factor(variable,
 
 
 
-ece_it %>% 
+hc<-ece_it %>% 
   hchart(
     'column', hcaes(x = 'best_start', y = 'value', group = 'variable'),
     stacking = "normal"
     ) %>%
-  hc_colors(c("#C965EE", "#EEC965", "#65EEC9"))%>%
+  hc_colors(cols3)%>%
   hc_xAxis(title = list(text = ""))%>%
     hc_yAxis(title = list(text = ""))%>%
   hc_title(
@@ -533,6 +570,10 @@ ece_it %>%
      style = list( fontWeight = "bold"),
     align = "left"
   )
+
+#view graph
+
+ hc_add_theme(hc, thm)
 
 
 
@@ -552,21 +593,12 @@ Column {data-width=400}
 Economic Wellness {data-orientation=rows}
 =====================================
 
-Row {data-height=350}
+Row {data-height=650}
 -------------------------------------
 
 ### Median Household Income in Long Beach and the Best Start Geographies by Census Tract
 
 ```{r}
-library(tigris)
-library(leaflet)
-library(tigris)
-library(RPostgreSQL)
-library(sp)
-library(sf)
-library(rgdal)
-library(rpostgis)
-library(RColorBrewer)
 
 #set working directory
 setwd("W:/Project/RDA Team/First5LA/First 5 LA Regional Report")
@@ -708,7 +740,7 @@ leaflet(height=1000, width=1000) %>%
   addPolygons(data=ct, color ="#a19f9f", weight = .3, smoothFactor = 0.5,
     opacity = 1, fillOpacity = 0.1, group = "LA County Census Tracts", highlight=highlightOptions(color= "#8c8b8b", stroke = 2, weight = 3, bringToFront = TRUE),  popup = ~paste0(ct$NAMELSAD, "</br>", "Median Household Income: ","$",ct$income_medianhh, "</br>", "Total Population: ",ct$race_total,"</br>","Hispanic/Latino Population %: ",ct$hisplatin_pct,"</br>","Black/African American Population %: ",ct$blackafm_pct), options = pathOptions(pane = "ct_pane"))%>%
   
-  addPolygons(data=bsc, color="#21BBB8", weight=2, opacity = 1, fillOpacity =.3, group="Existing BSCs") %>%
+  addPolygons(data=bsc, color="#1BBF91", weight=2, opacity = 1, fillOpacity =.3, group="Existing BSCs") %>%
   addLabelOnlyMarkers(data=bsc, ~X, ~Y, label =  ~as.character(bsc_label), labelOptions = labelOptions(noHide= T, direction = 'top', textOnly = T, style=list("font-size"="8px", "color"="black",  "font-weight" = "bold"))) %>%
 
   addProviderTiles("CartoDB.PositronNoLabels") %>%
@@ -725,7 +757,7 @@ Row
 valueBox("The Median Household Income in Long Beach is $63,017",
          icon = "fas fa-money-bill-wave",
          href="https://www.census.gov/quickfacts/longbeachcitycalifornia",
-         color="#00CCCC")  
+         color="#F20A40")  
 
 ```
 
@@ -738,24 +770,67 @@ valueBox("The Median Household Income in Long Beach is $63,017",
 valueBox("The Median Gross Rent in Long Beach is $1,324", 
          icon = "fas fa-house-user",
          href="https://www.census.gov/quickfacts/longbeachcitycalifornia",
-         color = "#7955C5") 
+         color = "#0AB5F2") 
 
 ```
 
 
+Row {data-height=350}
+-------------------------------------
+```{r}
+
+burden<-dbGetQuery(con, "SELECT * FROM acs_puma_rent_burden_2018 
+WHERE best_start ILIKE 'Central Long Beach'")
+
+
+hc <- burden %>%
+  filter(best_start == "Central Long Beach" & race != "Total") %>%
+  rename(Race = race,
+         Percent = burdened_pct) %>%
+  mutate(group = "Percent of rent-burdened households") %>%
+  arrange(Percent) %>%
+  hchart('column', hcaes(x = 'Race', y = 'Percent', group = group))  %>% 
+  hc_yAxis(    title = list(text = "Percentage"),
+    plotLines = list(
+      list(
+        label = list(text = "Total = 59.1%", align = "left"),
+        color = "#FF0000",
+        width = 2,
+        value = 59.1
+      )
+    )
+  )%>%
+  hc_title(
+    text = "More than half of families in Central Long Beach experience rent burden. Over 90% of Native Hawaiian and Pacific Islander Households spent at least 30% of their income on rent",
+    margin = 20,
+    align = "left",
+    style = list(useHTML = TRUE, fontWeight="bold")
+    )%>%
+  hc_subtitle(
+    text =  '<a>U.S Census Bureau</a>',
+     style = list( fontWeight = "bold"),
+    align = "left"
+  )
+
+#view graph
+
+hc_add_theme(hc, thm)
+
+```
+
 Child Safety {data-orientation=rows}
 =====================================
 
-Row {data-height=900}{.tabset .tabset-fade}
+Row {data-height=650}
 -------------------------------------
 
 ### Substantiated Child Abuse
+
 The California child welfare system is known for longstanding racial disparities and disproportionality. California and Los Angeles County have slowly and steadily reduced rates of substantiated child abuse. However, the current state of child welfare is difficult to gauge, because of simultaneous COVID-related increases in risk factors for child abuse and decreases in abuse reporting
 
 
-
 ```{r}
-library(highcharter)
+
 #load CCWIP LA County children with substantiations table
 la_subs <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/Los Angeles County/Children_with_substantiations_LA.csv", fileEncoding = 'UTF-8-BOM') 
 
@@ -782,9 +857,8 @@ ca_rates <- read.csv("W:/Project/RDA Team/TNP/Data/CCWIP/California/Substantiati
 
 
 
-
 # graph
-la_rates %>%
+hc<-la_rates %>%
   filter(Ethnic_Group != "Missing")%>%
   filter(Ethnic_Group != 'Total') %>%
   rename(Race = Ethnic_Group) %>%
@@ -804,12 +878,15 @@ la_rates %>%
     align = "left"
   )
 
+#view graph
+
+hc_add_theme(hc, thm)
+
 ```
 
 ### Injuries from Incidents with Law Enforcement
     
 ```{r}
-library(tidyr)
 
 force<-dbGetQuery(con, "SELECT * FROM state_use_of_force_by_race_1618")%>%
   gather(measure, value, total_pop:nh_twoormor_rate)%>%
@@ -824,7 +901,7 @@ force<-dbGetQuery(con, "SELECT * FROM state_use_of_force_by_race_1618")%>%
                                                                    ifelse(measure %in% 'nh_twoormor_rate', "Two or more Races", "Blank")))))))))
 
 
-force%>%
+hc<-force%>%
   hchart(type = "bar", hcaes(x = variable , y = value),
     tooltip = list(pointFormat = "Percentage: {point.value:,.1f}%"))%>%
       hc_tooltip(crosshairs = TRUE)%>%
@@ -843,13 +920,17 @@ force%>%
   )%>%
   hc_legend(enabled = FALSE)
 
+#view graph
+
+hc_add_theme(hc, thm)
+
 
 ```
    
-Row {data-height=300}{.tabset .tabset-fade}
+Row {data-height=350}
 -------------------------------------
 
-### Child Maltreatment 
+### Child Maltreatment
 
 More than 22,000 LA County children under 18 had substantiated child maltreatment allegations in 2019, the last full year and most local geography for which data are available. With a child population of over 2.2 million children, this equates to a rate of 10.2 substantiated allegations of child abuse per 1,000 children.
 
@@ -863,21 +944,21 @@ ChildrenUnder18 = c(la_kids[ which(la_kids$Ethnic_Group == "Total"), 11], ca_kid
 MaltreatmentRate =  c(la_rates[ which(la_rates$Ethnic_Group == "Total"), 11], ca_rates[ which(ca_rates$Ethnic_Group == "Total"), 11])
 )
 
-#make numbers have comma separators
-library(scales)
+
 
 rate_table<-rate_table%>%
   mutate(MaltreatedChildren=number(MaltreatedChildren, big.mark=","))%>%
   mutate(ChildrenUnder18=number(ChildrenUnder18, big.mark=","))
 
 #make table
-library(kableExtra)
-library(DT)
 
-# kbl(rate_table, col.names = c("", "Maltreated Children", "Children Under 18", "Maltreatment Rate"))%>%
-#     kable_styling(bootstrap_options = c( "hover", "condensed"))
-
-knitr::kable(rate_table, col.names = c("", "Maltreated Children", "Children Under 18", "Maltreatment Rate"))
+kbl(rate_table, align="c", col.names = c("", "Maltreated Children", "Children Under 18", "Maltreatment Rate"))%>%
+    kable_styling(bootstrap_options = c( "hover", "condensed", "bordered"))
+# 
+# %>%
+#   column_spec(1, border_right=T)%>%
+#     column_spec(2, border_right=T)%>%
+#     column_spec(3, border_right=T)
 
 
 ```
