@@ -3,6 +3,7 @@ title: "Additional Resources Page"
 output:
   html_document:
     number_sections: no
+    css: styles.css
     theme: flatly
     toc: yes
     toc_depth: 2
@@ -11,6 +12,12 @@ output:
     toc: yes
     toc_depth: '2'
 ---
+
+<style type="text/css">
+  body{
+  font-family: Franklin Gothic;
+}
+</style>
 
 ```{r setup, include=FALSE}
 library(dplyr)
@@ -29,19 +36,15 @@ This page is a hub of existing resources that provide data and stories on six to
 
 # Demographics
 
-## Data {.tabset .tabset-pills}
+## Data 
 
-### New Sources
-
-* [City of Long Beach Data Portal](https://datalb.longbeach.gov/)
-* [LA Counts](https://www.lacounts.org/)
-
-### Sources used in webpage
 ```{r}
 library(kableExtra)
 
 Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+
 Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
+
 
 Year<-c("2018", "2019", "2017", "2017")
 
@@ -59,75 +62,217 @@ table %>%
   mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
   kable("html", escape = FALSE, align="l") %>%
   kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
-  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #18bc9c; color: #fff;")%>%
-  pack_rows("City Level", 3, 4, label_row_css = "background-color: #18bc9c; color: #fff;")
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+# 
+# * [City of Long Beach Data Portal](https://datalb.longbeach.gov/)
+# * [LA Counts](https://www.lacounts.org/)
 
 
 
 ```
 
-## Stories
+## Stories (Placeholder)
 
 
 # Health
 
-## Additional Data Sources
+```{r}
+library(kableExtra)
+
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
 
-## Data {.tabset .tabset-pills}
+Year<-c("2018", "2019", "2017", "2017")
 
-### New Sources
 
-* [Covid-19 Race Class Analysis in Los Angeles County](https://www.racecounts.org/covid/)
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
 
-### Sources used in webapge
+table<-data.frame(Topic, Source, Year)
 
-## Stories
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+
+# * [Covid-19 Race Class Analysis in Los Angeles County](https://www.racecounts.org/covid/)
+
+```
+
+
+## Stories (Placeholder)
 
 # Built Environment
 
-## Data {.tabset .tabset-pills}
+```{r}
+library(kableExtra)
 
-### New Sources
-* [City of Long Beach Flood Zones](https://datalb.longbeach.gov/datasets/3aff2dbcf9bc43ba97a3bf5aa90d82ae_7)
-* SmartairLA Page
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
 
-### Sources used in webapge
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
-## Stories
 
+Year<-c("2018", "2019", "2017", "2017")
+
+
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
+
+table<-data.frame(Topic, Source, Year)
+
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+
+# * [City of Long Beach Flood Zones](https://datalb.longbeach.gov/datasets/3aff2dbcf9bc43ba97a3bf5aa90d82ae_7)
+#* SmartairLA Page
+
+```
+
+
+## Stories (Placeholder)
 
 # Education
 
-## Data {.tabset .tabset-pills}
+```{r}
+library(kableExtra)
 
-### New Sources
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
 
-* [Number of Licesned Day Care Center Slots per 1,000 Children age 0-5](https://www.lacounts.org/dataset/test-cdph-number-of-licensed-daycare-center-slots-per-1-000-children-aged-0-5-years)
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
-### Sources used in webpage
 
-## Stories
+Year<-c("2018", "2019", "2017", "2017")
+
+
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
+
+table<-data.frame(Topic, Source, Year)
+
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+
+
+# * [California Early Child Care Facilities Report (APCA)](https://www.advancementprojectca.org/ece-facilities)
+# * [Number of Licesned Day Care Center Slots per 1,000 Children age 0-5](https://www.lacounts.org/dataset/test-cdph-number-of-licensed-daycare-center-slots-per-1-000-children-aged-0-5-years)
+
+
+```
+
+
+## Stories (Placeholder)
 
 
 # Economic Wellness
 
-## Data {.tabset .tabset-pills}
+```{r}
+library(kableExtra)
 
-### New Sources
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
 
-### Sources used in webpage
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
-## Stories
+
+Year<-c("2018", "2019", "2017", "2017")
+
+
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
+
+table<-data.frame(Topic, Source, Year)
+
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+
+
+#* [Long Beach Homeless Count](http://www.longbeach.gov/health/services/directory/homeless-services/homeless-count/)
+
+
+
+```
+
+
+## Stories (Placeholder)
 
 # Child Safety
 
-## Data {.tabset .tabset-pills}
+```{r}
+library(kableExtra)
 
-### New Sources
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
 
-* [City of Long Beach Crime Incidents](https://longbeachca.maps.arcgis.com/apps/webappviewer/index.html?id=da05d12e09104e598b6ebcace59f2bba)
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
-### Sources used in webpage
 
-## Stories
+Year<-c("2018", "2019", "2017", "2017")
+
+
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
+
+table<-data.frame(Topic, Source, Year)
+
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+
+
+#* [City of Long Beach Crime Incidents](https://longbeachca.maps.arcgis.com/apps/webappviewer/index.html?id=da05d12e09104e598b6ebcace59f2bba)
+
+
+```
+
+
+## Stories (Placeholder)

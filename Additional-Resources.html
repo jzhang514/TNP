@@ -1338,9 +1338,16 @@ background-color: #f5f5f5;
 }
 .lightable-classic {
 border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
 width: 100%;
 margin-bottom: 10px;
 margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
 }
 .lightable-classic caption {
 color: #222222;
@@ -1359,9 +1366,6 @@ color: #222222;
 .lightable-classic thead tr:last-child th {
 border-bottom: 0.10em solid #111111;
 }
-.lightable-classic tbody tr:last-child td {
-border-bottom: 0.14em solid #111111;
-}
 .lightable-classic.lightable-hover tbody tr:hover {
 background-color: #F9EEC1;
 }
@@ -1370,8 +1374,15 @@ background-color: #f5f5f5;
 }
 .lightable-classic-2 {
 border-top: 3px double #111111;
+border-bottom: 3px double #111111;
 width: 100%;
 margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
 }
 .lightable-classic-2 caption {
 color: #222222;
@@ -1408,6 +1419,12 @@ border: 1px solid #EEE;
 border-collapse: collapse;
 margin-bottom: 10px;
 }
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
 .lightable-material th {
 height: 56px;
 padding-left: 16px;
@@ -1441,6 +1458,12 @@ border-collapse: collapse;
 margin-bottom: 10px;
 background-color: #363640;
 }
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
 .lightable-material-dark th {
 height: 56px;
 padding-left: 16px;
@@ -1470,6 +1493,12 @@ border-bottom: 1px solid #FFFFFF12;
 width: 100%;
 margin-bottom: 10px;
 color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
 }
 .lightable-paper thead tr:last-child th {
 color: #666;
@@ -1550,6 +1579,7 @@ h6 {
 </style>
 
 
+<style type="text/css">.title {font-family: Franklin Gothic Condensed}h1{font-family: Franklin Gothic Condensed}h2{font-family: Franklin Gothic}</style>
 
 
 
@@ -1736,20 +1766,16 @@ div.tocify {
 </div>
 
 
+<style type="text/css">
+  body{
+  font-family: Franklin Gothic;
+}
+</style>
 <p>This page is a hub of existing resources that provide data and stories on six topic areas surrounding child wellness: Demographics, Health, Built Environment, Education, Economic Wellness and Child Safety. Centralizing data makes it easier to draw connections between these different topic areas, all of which exist in relation to each other and require investment and in order for children to truly thrive. Drawing the connections is how we can paint a holistic picture of child wellness.</p>
 <div id="demographics" class="section level1">
 <h1>Demographics</h1>
-<div id="data" class="section level2 tabset tabset-pills">
+<div id="data" class="section level2">
 <h2>Data</h2>
-<div id="new-sources" class="section level3">
-<h3>New Sources</h3>
-<ul>
-<li><a href="https://datalb.longbeach.gov/">City of Long Beach Data Portal</a></li>
-<li><a href="https://www.lacounts.org/">LA Counts</a></li>
-</ul>
-</div>
-<div id="sources-used-in-webpage" class="section level3">
-<h3>Sources used in webpage</h3>
 <table class="table table-hover table-condensed table-striped" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1769,7 +1795,7 @@ Dataset
 </thead>
 <tbody>
 <tr grouplength="2">
-<td colspan="4" style="background-color: #18bc9c; color: #fff;">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
 <strong>Zip Code Level</strong>
 </td>
 </tr>
@@ -1802,7 +1828,7 @@ American Census Survey (ACS)
 </td>
 </tr>
 <tr grouplength="2">
-<td colspan="4" style="background-color: #18bc9c; color: #fff;">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
 <strong>City Level</strong>
 </td>
 </tr>
@@ -1837,100 +1863,468 @@ National Equity Atlas
 </tbody>
 </table>
 </div>
-</div>
-<div id="stories" class="section level2">
-<h2>Stories</h2>
+<div id="stories-placeholder" class="section level2">
+<h2>Stories (Placeholder)</h2>
 </div>
 </div>
 <div id="health" class="section level1">
 <h1>Health</h1>
-<div id="additional-data-sources" class="section level2">
-<h2>Additional Data Sources</h2>
-</div>
-<div id="data-1" class="section level2 tabset tabset-pills">
-<h2>Data</h2>
-<div id="new-sources-1" class="section level3">
-<h3>New Sources</h3>
-<ul>
-<li><a href="https://www.racecounts.org/covid/">Covid-19 Race Class Analysis in Los Angeles County</a></li>
-</ul>
-</div>
-<div id="sources-used-in-webapge" class="section level3">
-<h3>Sources used in webapge</h3>
-</div>
-</div>
-<div id="stories-1" class="section level2">
-<h2>Stories</h2>
+<table class="table table-hover table-condensed table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Topic
+</th>
+<th style="text-align:left;">
+Source
+</th>
+<th style="text-align:left;">
+Year
+</th>
+<th style="text-align:left;">
+Dataset
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>Zip Code Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Race and Ethnicity
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2018
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Children Age 0 to 5
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2019
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS" style="     ">Data link</a>
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>City Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Racial Generation Gap
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Nativity and Ancestry
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" style="     ">Data link</a>
+</td>
+</tr>
+</tbody>
+</table>
+<div id="stories-placeholder-1" class="section level2">
+<h2>Stories (Placeholder)</h2>
 </div>
 </div>
 <div id="built-environment" class="section level1">
 <h1>Built Environment</h1>
-<div id="data-2" class="section level2 tabset tabset-pills">
-<h2>Data</h2>
-<div id="new-sources-2" class="section level3">
-<h3>New Sources</h3>
-<ul>
-<li><a href="https://datalb.longbeach.gov/datasets/3aff2dbcf9bc43ba97a3bf5aa90d82ae_7">City of Long Beach Flood Zones</a></li>
-<li>SmartairLA Page</li>
-</ul>
-</div>
-<div id="sources-used-in-webapge-1" class="section level3">
-<h3>Sources used in webapge</h3>
-</div>
-</div>
-<div id="stories-2" class="section level2">
-<h2>Stories</h2>
+<table class="table table-hover table-condensed table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Topic
+</th>
+<th style="text-align:left;">
+Source
+</th>
+<th style="text-align:left;">
+Year
+</th>
+<th style="text-align:left;">
+Dataset
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>Zip Code Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Race and Ethnicity
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2018
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Children Age 0 to 5
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2019
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS" style="     ">Data link</a>
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>City Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Racial Generation Gap
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Nativity and Ancestry
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" style="     ">Data link</a>
+</td>
+</tr>
+</tbody>
+</table>
+<div id="stories-placeholder-2" class="section level2">
+<h2>Stories (Placeholder)</h2>
 </div>
 </div>
 <div id="education" class="section level1">
 <h1>Education</h1>
-<div id="data-3" class="section level2 tabset tabset-pills">
-<h2>Data</h2>
-<div id="new-sources-3" class="section level3">
-<h3>New Sources</h3>
-<ul>
-<li><a href="https://www.lacounts.org/dataset/test-cdph-number-of-licensed-daycare-center-slots-per-1-000-children-aged-0-5-years">Number of Licesned Day Care Center Slots per 1,000 Children age 0-5</a></li>
-</ul>
-</div>
-<div id="sources-used-in-webpage-1" class="section level3">
-<h3>Sources used in webpage</h3>
-</div>
-</div>
-<div id="stories-3" class="section level2">
-<h2>Stories</h2>
+<table class="table table-hover table-condensed table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Topic
+</th>
+<th style="text-align:left;">
+Source
+</th>
+<th style="text-align:left;">
+Year
+</th>
+<th style="text-align:left;">
+Dataset
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>Zip Code Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Race and Ethnicity
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2018
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Children Age 0 to 5
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2019
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS" style="     ">Data link</a>
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>City Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Racial Generation Gap
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Nativity and Ancestry
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" style="     ">Data link</a>
+</td>
+</tr>
+</tbody>
+</table>
+<div id="stories-placeholder-3" class="section level2">
+<h2>Stories (Placeholder)</h2>
 </div>
 </div>
 <div id="economic-wellness" class="section level1">
 <h1>Economic Wellness</h1>
-<div id="data-4" class="section level2 tabset tabset-pills">
-<h2>Data</h2>
-<div id="new-sources-4" class="section level3">
-<h3>New Sources</h3>
-</div>
-<div id="sources-used-in-webpage-2" class="section level3">
-<h3>Sources used in webpage</h3>
-</div>
-</div>
-<div id="stories-4" class="section level2">
-<h2>Stories</h2>
+<table class="table table-hover table-condensed table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Topic
+</th>
+<th style="text-align:left;">
+Source
+</th>
+<th style="text-align:left;">
+Year
+</th>
+<th style="text-align:left;">
+Dataset
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>Zip Code Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Race and Ethnicity
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2018
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Children Age 0 to 5
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2019
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS" style="     ">Data link</a>
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>City Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Racial Generation Gap
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Nativity and Ancestry
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" style="     ">Data link</a>
+</td>
+</tr>
+</tbody>
+</table>
+<div id="stories-placeholder-4" class="section level2">
+<h2>Stories (Placeholder)</h2>
 </div>
 </div>
 <div id="child-safety" class="section level1">
 <h1>Child Safety</h1>
-<div id="data-5" class="section level2 tabset tabset-pills">
-<h2>Data</h2>
-<div id="new-sources-5" class="section level3">
-<h3>New Sources</h3>
-<ul>
-<li><a href="https://longbeachca.maps.arcgis.com/apps/webappviewer/index.html?id=da05d12e09104e598b6ebcace59f2bba">City of Long Beach Crime Incidents</a></li>
-</ul>
-</div>
-<div id="sources-used-in-webpage-3" class="section level3">
-<h3>Sources used in webpage</h3>
-</div>
-</div>
-<div id="stories-5" class="section level2">
-<h2>Stories</h2>
+<table class="table table-hover table-condensed table-striped" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Topic
+</th>
+<th style="text-align:left;">
+Source
+</th>
+<th style="text-align:left;">
+Year
+</th>
+<th style="text-align:left;">
+Dataset
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>Zip Code Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Race and Ethnicity
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2018
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Children Age 0 to 5
+</td>
+<td style="text-align:left;">
+American Census Survey (ACS)
+</td>
+<td style="text-align:left;">
+2019
+</td>
+<td style="text-align:left;">
+<a href="https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS" style="     ">Data link</a>
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="4" style="background-color: #1BBF91; color: #fff;">
+<strong>City Level</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Racial Generation Gap
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037" style="     ">Data link</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left; padding-left:  2em;" indentlevel="1">
+Nativity and Ancestry
+</td>
+<td style="text-align:left;">
+National Equity Atlas
+</td>
+<td style="text-align:left;">
+2017
+</td>
+<td style="text-align:left;">
+<a href="https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" style="     ">Data link</a>
+</td>
+</tr>
+</tbody>
+</table>
+<div id="stories-placeholder-5" class="section level2">
+<h2>Stories (Placeholder)</h2>
 </div>
 </div>
 
