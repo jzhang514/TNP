@@ -43,6 +43,9 @@ library(kableExtra)
 
 Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
 
+
+Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
+
 Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
 
@@ -54,14 +57,14 @@ url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_P
     "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
     "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
 
-table<-data.frame(Topic, Source, Year)
+table<-data.frame(Topic, Description, Source, Year)
 
 #make table
 
 table %>% 
   mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
   kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
   pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
   pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
 
@@ -80,9 +83,10 @@ table %>%
 # Health
 
 ```{r}
-library(kableExtra)
-
 Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+
+
+Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
 
 Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
@@ -95,20 +99,22 @@ url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_P
     "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
     "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
 
-table<-data.frame(Topic, Source, Year)
+table<-data.frame(Topic, Description, Source, Year)
 
 #make table
 
 table %>% 
   mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
   kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
   pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
   pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
 
 
 
+
 # * [Covid-19 Race Class Analysis in Los Angeles County](https://www.racecounts.org/covid/)
+# https://healthyplacesindex.org/data-reports/
 
 ```
 
@@ -118,9 +124,10 @@ table %>%
 # Built Environment
 
 ```{r}
-library(kableExtra)
-
 Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+
+
+Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
 
 Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
@@ -133,14 +140,14 @@ url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_P
     "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
     "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
 
-table<-data.frame(Topic, Source, Year)
+table<-data.frame(Topic, Description, Source, Year)
 
 #make table
 
 table %>% 
   mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
   kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
   pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
   pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
 
@@ -157,9 +164,10 @@ table %>%
 # Education
 
 ```{r}
-library(kableExtra)
-
 Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+
+
+Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
 
 Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
@@ -172,16 +180,17 @@ url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_P
     "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
     "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
 
-table<-data.frame(Topic, Source, Year)
+table<-data.frame(Topic, Description, Source, Year)
 
 #make table
 
 table %>% 
   mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
   kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
   pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
   pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
 
 
 
@@ -199,9 +208,10 @@ table %>%
 # Economic Wellness
 
 ```{r}
-library(kableExtra)
-
 Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+
+
+Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
 
 Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
@@ -214,17 +224,16 @@ url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_P
     "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
     "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
 
-table<-data.frame(Topic, Source, Year)
+table<-data.frame(Topic, Description, Source, Year)
 
 #make table
 
 table %>% 
   mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
   kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
   pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
   pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
-
 
 
 
@@ -240,9 +249,10 @@ table %>%
 # Child Safety
 
 ```{r}
-library(kableExtra)
-
 Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+
+
+Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
 
 Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
 
@@ -255,17 +265,16 @@ url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_P
     "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
     "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
 
-table<-data.frame(Topic, Source, Year)
+table<-data.frame(Topic, Description, Source, Year)
 
 #make table
 
 table %>% 
   mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
   kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"))%>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
   pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
   pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
-
 
 
 
