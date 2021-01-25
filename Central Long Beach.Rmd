@@ -58,19 +58,19 @@ con <- dbConnect(drv, dbname = "tnp",
 
 ```{r include=FALSE}
 
-###current colors: flatly theme -turquoise compound
+###current colors: additional resources page -theme
 
 
 ##colors as a vector
 
-cols=c("#0AB5F2", "#304E59", "#1BBF91","#C7574E", "#F20A40")
+cols=c("#344859", "#C2F2ED", "#1BBF91","#1FBF84", "#79D9B6")
 
-cols3=c("#0AB5F2", "#F20A40", "#304E59")
+cols3=c("#344859", "#C2F2ED", "#1BBF91")
 
 ####MAKE MY HC THEME###
 
   thm <- hc_theme(
-  colors = c("#304E59","#0AB5F2",  "#1BBF91","#C7574E", "#F20A40"),
+  colors = c("#344859", "#C2F2ED", "#1BBF91","#1FBF84", "#79D9B6"),
   chart = list(
     backgroundColor = ""
   ),
@@ -248,7 +248,9 @@ Column {data-width=300}
 ```
 
 
-### Our mission is to build the capacity of nonprofits so they can make positive change in their communities. Our vision is successful nonprofits supporting thriving communities.
+### About The Nonprofit Partnership.
+
+Our mission is to build the capacity of nonprofits so they can make positive change in their communities. Our vision is successful nonprofits supporting thriving communities.
 ```{r out.width = "30%"}
 
 knitr::include_graphics("W:/Project/RDA Team/TNP/R/TNP_logo.png")
@@ -356,7 +358,7 @@ hc<-race_clb%>%
   hchart(type = "treemap", hcaes(x = variable, value = value, color=value),
    tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
       hc_tooltip(crosshairs = TRUE)%>%
-  hc_colorAxis(stops = color_stops(n=5, colors = c("#087355", "#3DFFC8", "#1BBF91","#731A00", "#BF401B")))%>%
+   hc_colorAxis(stops = color_stops(colors = c("#344859", "#C2F2ED", "#1FBF84","#79D9B6")))%>% 
      hc_title(
     text = "61.3% of families in Central Long Beach are Hispanic/Latinx. The second largest group of families are Asian at 14%",
     margin = 20,
@@ -398,7 +400,7 @@ hc<-race_lac%>%
   hchart(type = "treemap", hcaes(x = variable, value =value, color = value),
          tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
       hc_tooltip(crosshairs = TRUE)%>%
-    hc_colorAxis(stops = color_stops(colors = c("#087355", "#3DFFC8", "#1BBF91","#731A00", "#BF401B")))%>%
+    hc_colorAxis(stops = color_stops(colors = c("#344859", "#C2F2ED", "#1FBF84","#79D9B6")))%>% ##actually have to manually specify theme colors yourself
    hc_title(
     text = "26.3% of families in Los Angeles County are white, making them the second most represented racial group in the county behind Hispanic/Latinx families.",
     margin = 20,
@@ -411,6 +413,7 @@ hc<-race_lac%>%
     align = "left"
   )%>%
   hc_legend(enabled = FALSE)
+
 
 #view graph with theme
 
@@ -433,7 +436,7 @@ Column
 
 valueBox("4.2% of Children Age 0-8 in Long Beach are Uninsured",
          href="https://data.census.gov/cedsci/",
-         color="#F20A40")  
+         color="#79D9B6")  
 
 ```
 
@@ -449,7 +452,8 @@ uninsured<-dbGetQuery(con, "SELECT * FROM pumas_uninsur_chil0_8 WHERE
  
  
 
-kable(uninsured, digits=1, format.args = list(big.mark = ","), col.names = c("", "Total Uninsured", "Total Population", "Percent Uninsured"))%>%
+kable(uninsured, digits=1, format.args = list(big.mark = ","), html_format="Franklin Gothic", 
+      col.names = c("", "Total Uninsured", "Total Population", "Percent Uninsured"))%>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
 
@@ -475,7 +479,7 @@ hc<-uninsured_clb %>%
     name = "Uninsured Population in Central Long Beach",
     tooltip = list(pointFormat = "Uninsured Percentage = 16.7%")
     )%>%
-  # hc_colorAxis(minColor="#BF401B", maxColor = "#1BBF91")%>%
+   hc_colorAxis(minColor="#C2F2ED", maxColor = "#344859")%>% #note I manually specified my colors
       hc_legend(enabled = FALSE)%>%
   hc_title(
     text = "16.7% of Central Long Beach households are uninsured. This is approximately 6% higher than the uninsured rate in Los Angeles County",
@@ -488,6 +492,8 @@ hc<-uninsured_clb %>%
      style = list( fontWeight = "bold"),
     align = "left"
   )
+
+
 
 #view graph
 
@@ -593,174 +599,23 @@ Column {data-width=400}
 Economic Wellness {data-orientation=rows}
 =====================================
 
-Row {data-height=650}
--------------------------------------
-
-### Median Household Income in Long Beach and the Best Start Geographies by Census Tract
-
-```{r}
-
-#set working directory
-setwd("W:/Project/RDA Team/First5LA/First 5 LA Regional Report")
-
-#################################LA Census Tracts##########################
-
-########Prep Data: Census Tract Shapefile
-
-#read census tract shapefiles data
-ct <- st_read(
-  "W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Shapes/tl_2019_06_tract_pj_clip.shp", quiet=TRUE)
-
-####Add XY coordinates to bsc spatial df
-## find centroid coordinates
-ct_cnt = st_centroid(ct)
-ct_crd = data.frame(st_coordinates(ct_cnt))
-
-#add ID column to each df and spatial df for joining
-ct$ID <- seq.int(nrow(ct))
-ct_crd$ID <- seq.int(nrow(ct_crd))
-
-##join spatial frame with data frame to get the XY columns into the spatial frame
-
-ct<-geo_join(ct, ct_crd, 'ID', 'ID',
-  how = "left")
-
-
-#######Prep Data: ACS Median HH Income 
-
-##read median HH data from ACS
-
-income<-read.csv(file ="W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Data/ACS_17_5YR_S1903/ACS_17_5YR_S1903_with_ann.csv", header=TRUE, sep=",", strip.white = TRUE)
-
-#remove annotation row 
-income = income[-1,]
-
-
-#rename income column name for clarity and subset for fields of interest
-income <-income[,c(1:3, 8)]
-colnames(income)[colnames(income)=="HC03_EST_VC02"] <- "income_medianhh"
-
-##income fields of interest from acs table:
-####HC03_EST_VC02: Median Income (dollars); Estimate; Households 
-
-#rename column 'GEO.id' to 'Geo_id' in income-csv to match column name in race-csv for joining
-colnames(income)[colnames(income)=="GEO.id2"] <- "GEO_id2"
-
-##change median hh income to have commas on numbers with more than 3 digits  
-income$income_medianhh<-prettyNum(income$income_medianhh, big.mark=",", preserve.width="none")
-
-
-########Prep Data: ACS Race/Ethnicity
-
-##read race data from ACS
-race<-read.csv(file="W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Data/ACS_17_5YR_B03002/ACS_17_5YR_B03002.csv", header=TRUE, sep=",", strip.white = TRUE)
-
-
-##subset race to only include fields of interest & rename column names for clarity
-race <-race[,c(1, 4, 10,26)]
-colnames(race)[colnames(race)=="HD01_VD01"] <- "race_total"
-colnames(race)[colnames(race)=="HD01_VD12"] <- "race_hisplatin"
-colnames(race)[colnames(race)=="HD01_VD04"] <- "race_blackafm"
-
-###Create columns for race percentage
-
-race<-race%>%
-  mutate(hisplatin_pct=race_hisplatin/race_total*100)%>%
-  mutate(blackafm_pct=race_blackafm/race_total*100)%>%
-  mutate(hisplatin_pct=round(hisplatin_pct, digits=2))%>%
-  mutate(blackafm_pct=round(blackafm_pct, digits=2))
-
-##change race_total to have commas on numbers with more than 3 digits  
-
-race$race_total<-prettyNum(race$race_total, big.mark=",", preserve.width="none")
-
-
-##race fields of interest from acs table:
-####HD01_VD01: ESTIMATE; TOTAL (denominator for calculating percentage)
-####HD01_VD12 = ESTIMATE; HISPANIC OR LATINO 
-####HD01_VD04 =ESTIMATE; NOT HISPANIC OR LATINO; BLACK OR AFRICAN AMERICAN ALONE
-
-
-
-#########join ACS race / ethnicity data to ACS Median HH income data
-
-income_race<-merge(income, race, by = "GEO_id2", all = TRUE)
-
-
-##join census tract income_race data to ct spatial dataframe (shapefile)
-
-#add leading 0 to Geo.id2 column in income-race acs data, for joining to census tract shapefile
-income_race$GEO_id2<-paste("0",income_race$GEO_id2, sep="")
-
-#join the ACS race/income data to census tract shapefile
-ct<-geo_join(ct, income_race, 'GEOID', 'GEO_id2',
-  how = "left")
-
-#transform shapefile for leaflet
-ct<-st_transform(ct, CRS("+proj=longlat +datum=WGS84 +no_defs"))
-
-
-########################BSC#################################
-
-########Prep data
-
-bsc <-st_read("W:/Project/RDA Team/First5LA/First 5 LA Regional Report/Shapes/F5LA_BSC_boundaries_2012_pj.shp", quiet=TRUE)
-
-####tranasform bsc shapefile for leaflet
- 
-bsc<-st_transform(bsc, CRS("+proj=longlat +datum=WGS84 +no_defs"))
-
-####Add XY coordinates to bsc spatial df
-
-## find centroid coordinates
-bsc_cnt = st_centroid(bsc)
-bsc_crd = data.frame(st_coordinates(bsc_cnt))
-
-#add ID column to each df and spatial df for joining
-bsc$ID <- seq.int(nrow(bsc))
-bsc_crd$ID <- seq.int(nrow(bsc_crd))
-
-##join spatial frame with data frame to get the XY columns into the spatial frame
-
-bsc<-geo_join(bsc, bsc_crd, 'ID', 'ID',
-  how = "left")
-
-#create label 
-bsc_label<-paste(bsc$BSC)
-
-########################FINAL Map!!##############################
-
-
-leaflet(height=1000, width=1000) %>%
-  
-  addMapPane("ct_pane", zIndex=485)%>%
-  addMapPane("bsc_pane", zIndex=489)%>%
-  
-  
-  addPolygons(data=ct, color ="#a19f9f", weight = .3, smoothFactor = 0.5,
-    opacity = 1, fillOpacity = 0.1, group = "LA County Census Tracts", highlight=highlightOptions(color= "#8c8b8b", stroke = 2, weight = 3, bringToFront = TRUE),  popup = ~paste0(ct$NAMELSAD, "</br>", "Median Household Income: ","$",ct$income_medianhh, "</br>", "Total Population: ",ct$race_total,"</br>","Hispanic/Latino Population %: ",ct$hisplatin_pct,"</br>","Black/African American Population %: ",ct$blackafm_pct), options = pathOptions(pane = "ct_pane"))%>%
-  
-  addPolygons(data=bsc, color="#1BBF91", weight=2, opacity = 1, fillOpacity =.3, group="Existing BSCs") %>%
-  addLabelOnlyMarkers(data=bsc, ~X, ~Y, label =  ~as.character(bsc_label), labelOptions = labelOptions(noHide= T, direction = 'top', textOnly = T, style=list("font-size"="8px", "color"="black",  "font-weight" = "bold"))) %>%
-
-  addProviderTiles("CartoDB.PositronNoLabels") %>%
- setView( -118.189352, 33.789868, zoom = 14)
-```
-
-Row 
+Row {data-height=175}
 -------------------------------------
 
 ### U.S Census Bureau
 
 ```{r}
 
+
 valueBox("The Median Household Income in Long Beach is $63,017",
          icon = "fas fa-money-bill-wave",
          href="https://www.census.gov/quickfacts/longbeachcitycalifornia",
-         color="#F20A40")  
-
+         color="#79D9B6")
 ```
 
+
+Row {data-height=175}
+-------------------------------------
 
 ### U.S Census Bureau
 
@@ -768,14 +623,14 @@ valueBox("The Median Household Income in Long Beach is $63,017",
 
 
 valueBox("The Median Gross Rent in Long Beach is $1,324", 
-         icon = "fas fa-house-user",
+         icon = "fas fa-house",
          href="https://www.census.gov/quickfacts/longbeachcitycalifornia",
-         color = "#0AB5F2") 
+         color = "#1FBF84") 
 
 ```
 
 
-Row {data-height=350}
+Row {data-height=650}
 -------------------------------------
 ```{r}
 
@@ -825,6 +680,7 @@ Row {data-height=650}
 -------------------------------------
 
 ### Substantiated Child Abuse
+
 
 The California child welfare system is known for longstanding racial disparities and disproportionality. California and Los Angeles County have slowly and steadily reduced rates of substantiated child abuse. However, the current state of child welfare is difficult to gauge, because of simultaneous COVID-related increases in risk factors for child abuse and decreases in abuse reporting
 
@@ -932,7 +788,7 @@ Row {data-height=350}
 
 ### Child Maltreatment
 
-More than 22,000 LA County children under 18 had substantiated child maltreatment allegations in 2019, the last full year and most local geography for which data are available. With a child population of over 2.2 million children, this equates to a rate of 10.2 substantiated allegations of child abuse per 1,000 children.
+<br>More than 22,000 LA County children under 18 had substantiated child maltreatment allegations in 2019, the last full year and most local geography for which data are available. With a child population of over 2.2 million children, this equates to a rate of 10.2 substantiated allegations of child abuse per 1,000 children.
 
 ```{r}
 
@@ -952,7 +808,7 @@ rate_table<-rate_table%>%
 
 #make table
 
-kbl(rate_table, align="c", col.names = c("", "Maltreated Children", "Children Under 18", "Maltreatment Rate"))%>%
+kbl(rate_table, align="c", html_format="Franklin Gothic", col.names = c("", "Maltreated Children", "Children Under 18", "Maltreatment Rate"))%>%
     kable_styling(bootstrap_options = c( "hover", "condensed", "bordered"))
 # 
 # %>%
