@@ -1,11 +1,10 @@
 ---
-title: "Central Long Beach (TNP Deliverable Prototype)"
+title: "Central Long Beach"
 output: 
   flexdashboard::flex_dashboard:
     vertical_layout: fill
     css: main styles.css
     theme: flatly
-    social: [ "twitter", "facebook", "menu" ]
     navbar:
       - { title: "Additional Links", href: "https://jzhang514.github.io/TNP/Additional-Resources", align: right }
 ---
@@ -99,7 +98,7 @@ cols3=c("#344859", "#C2F2ED", "#1BBF91")
 
 ```
 
-Introduction
+Introduction 
 =====================================
 
 
@@ -288,7 +287,7 @@ Column {data-width=300}
 
 
 
-Demographics
+Demographics 
 =====================================
 
 Demographics {data-width=500}
@@ -616,7 +615,7 @@ leaflet(data=block_geo)%>%
   addLegend(pal = pal_ozone, 
             values = ~ozone,
             opacity = 0.7,
-            position = "bottomright",
+            position = "bottomleft",
             title="Ozone Level in the Air"
   )%>%
   #legend -pm25
@@ -628,21 +627,12 @@ leaflet(data=block_geo)%>%
   )%>%
      #layer control
     addLayersControl(overlayGroups =
-                       c("ozone", "pm25"), 
+                       c("Ozone Level", "PM 2.5 Level"), 
                   options = layersControlOptions(collapsed = FALSE))%>%
 #hide pm25 layer by default
   hideGroup("pm25")
     
     
-    
-    
-    
-    
-
-
-
-
-
 ```
 
 
@@ -715,7 +705,7 @@ Column {data-width=400}
 ```
 
 
-Economic Wellness {data-orientation=rows}
+Economic Wellness {data-orientation=rows} 
 =====================================
 
 Row {data-height=175}
@@ -792,7 +782,7 @@ hc_add_theme(hc, thm)
 
 ```
 
-Child Safety {data-orientation=rows}
+Child Safety {data-orientation=rows} 
 =====================================
 
 Row {data-height=650}
