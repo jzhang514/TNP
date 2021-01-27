@@ -3,7 +3,7 @@ title: "Central Long Beach (TNP Deliverable Prototype)"
 output: 
   flexdashboard::flex_dashboard:
     vertical_layout: fill
-    css: styles.css
+    css: main styles.css
     theme: flatly
     social: [ "twitter", "facebook", "menu" ]
     navbar:
@@ -103,7 +103,7 @@ Introduction
 =====================================
 
 
-Column {data-width=700}
+Column {data-width=800}
 -------------------------------------
     
 ### Central Long Beach Best Start Geography
@@ -120,6 +120,7 @@ library(sp)
 library(sf)
 library(rgdal)
 library(rpostgis)
+library(RColorBrewer)
 
 ######Layer 1: BSC###########
 
@@ -160,7 +161,7 @@ leaflet(data=bsc)%>%
 
   #bsc layer
   
-  addPolygons(data=bsc, color="#1BBF91", weight=1.5, opacity = 0, fillOpacity = .6,
+  addPolygons(data=bsc, color="#79D9B6", weight=1.5, opacity = 0, fillOpacity = .4,
                label=as.character(bsc$best_start)) %>%
   
   addLabelOnlyMarkers(data=bsc,  ~X, ~Y, label =  ~as.character(bsc_label), 
@@ -174,7 +175,7 @@ leaflet(data=bsc)%>%
 ```
 
 
-Column {data-width=700} {.mobile}
+Column {data-width=500} {.mobile}
 -------------------------------------
     
 ### Central Long Beach Best Start Geography
@@ -242,6 +243,10 @@ Column {data-width=300}
    
 ### Description about Central Long Beach
 
+> Duis interdum ante mauris, scelerisque placerat magna dictum et. Suspendisse dignissim augue vel nisi consequat pulvinar. Sed dictum pretium dui, non fermentum nibh lacinia vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sem urna, tincidunt vel porta quis, ornare eu leo. Quisque non tortor nec felis tempus hendrerit. Nunc vel urna risus. 
+
+> Duis interdum ante mauris, scelerisque placerat magna dictum et. Suspendisse dignissim augue vel nisi consequat pulvinar. Sed dictum pretium dui, non fermentum nibh lacinia vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sem urna, tincidunt vel porta quis, ornare eu leo. Quisque non tortor nec felis tempus hendrerit. Nunc vel urna risus.
+
 > Duis interdum ante mauris, scelerisque placerat magna dictum et. Suspendisse dignissim augue vel nisi consequat pulvinar. Sed dictum pretium dui, non fermentum nibh lacinia vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sem urna, tincidunt vel porta quis, ornare eu leo. Quisque non tortor nec felis tempus hendrerit. Nunc vel urna risus.
 
 ```{r}
@@ -250,11 +255,11 @@ Column {data-width=300}
 
 ### About The Nonprofit Partnership.
 
-Our mission is to build the capacity of nonprofits so they can make positive change in their communities. Our vision is successful nonprofits supporting thriving communities.
+Our mission is to build the capacity of nonprofits so they can make positive change in their communities. Our vision is successful nonprofits supporting thriving communities.<br><br>
 ```{r out.width = "30%"}
 
 knitr::include_graphics("W:/Project/RDA Team/TNP/R/TNP_logo.png")
-
+#knitr::include_graphics("W:/Project/RDA Team/TNP/R/APCA logo.png")
 ```
 
 
@@ -265,9 +270,10 @@ Overview
 -----------------------------------------------------------------------
 > Duis interdum ante mauris, scelerisque placerat magna dictum et. Suspendisse dignissim augue vel nisi consequat pulvinar. Sed dictum pretium dui, non fermentum nibh lacinia vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sem urna, tincidunt vel porta quis, ornare eu leo. Quisque non tortor nec felis tempus hendrerit. Nunc vel urna risus.
 
-> Phasellus id risus vel turpis egestas euismod. Vestibulum bibendum lorem vitae velit pellentesque vestibulum. Sed vehicula justo tortor, ut lacinia dui suscipit id. Vivamus vel nulla laoreet, pulvinar leo tincidunt, consectetur leo. Nam dolor lectus, tempus sed ipsum a, auctor pharetra augue. Maecenas interdum ornare libero non venenatis. Duis tincidunt ipsum et nisl ultricies rutrum. Phasellus semper dui vel ante varius, at tincidunt arcu viverra. Duis interdum libero felis, in gravida nibh auctor ac. Maecenas et suscipit felis. Nullam id elementum ex. Aenean tempor erat a felis sollicitudin consectetur. Sed ac semper ex. Integer quis facilisis sapien.
+```{r}
 
-> Donec congue pulvinar ex, a dictum diam finibus consequat. Aliquam sit amet neque tortor. Donec imperdiet vitae dolor quis auctor. Vivamus at enim ultricies justo tempus elementum ut non nisi. In vulputate varius quam sit amet volutpat. Suspendisse sed bibendum tellus. Donec tristique feugiat ligula vitae sollicitudin.
+
+```
 
 Column {data-width=300}
 -----------------------------------------------------------------------
@@ -436,7 +442,7 @@ Column
 
 valueBox("4.2% of Children Age 0-8 in Long Beach are Uninsured",
          href="https://data.census.gov/cedsci/",
-         color="#79D9B6")  
+         color="#344859")  
 
 ```
 
@@ -479,7 +485,7 @@ hc<-uninsured_clb %>%
     name = "Uninsured Population in Central Long Beach",
     tooltip = list(pointFormat = "Uninsured Percentage = 16.7%")
     )%>%
-   hc_colorAxis(minColor="#C2F2ED", maxColor = "#344859")%>% #note I manually specified my colors
+   hc_colorAxis(minColor="#C2F2ED", maxColor = "#1FBF84")%>% #note I manually specified my colors
       hc_legend(enabled = FALSE)%>%
   hc_title(
     text = "16.7% of Central Long Beach households are uninsured. This is approximately 6% higher than the uninsured rate in Los Angeles County",
@@ -525,6 +531,119 @@ Column
 
 Built Environment 
 =====================================
+
+```{r}
+avg<-dbGetQuery(con, "SELECT * FROM epa_airpollution_avg_lbla_2019")
+
+# pull in the epa data by block group
+
+block<-dbGetQuery(con, "SELECT id, 
+DSLPM,
+CANCER,
+RESP,
+OZONE,
+PM25,
+D_OZONE_2,
+D_PM25_2,
+P_OZONE,
+P_PM25
+ FROM epa_blkgrp_pctiles_2019")
+
+block<-block%>%
+  mutate(dslpm=as.numeric(dslpm))%>%
+  mutate(cancer=as.numeric(cancer))%>%
+  mutate(resp=as.numeric(resp))%>%
+  mutate(ozone=as.numeric(ozone))%>%
+  mutate(pm25=as.numeric(pm25))%>%
+  mutate(d_ozone_2=as.numeric(d_ozone_2))%>%
+  mutate(d_pm25_2=as.numeric(d_pm25_2))%>%
+  mutate(p_ozone=as.numeric(p_ozone))%>%
+  mutate(p_pm25=as.numeric(p_pm25))
+
+#pull in the bsc-block group crosswalk 
+
+geo<-pgGetGeom(con, query="SELECT * FROM bsc_blockgroups_join", geom = "bg_geom")
+
+
+#join the block group geom with the block group level epa data
+
+block_geo<-geo_join(geo, block, by_df='id', by_sp='geoid',
+             how = "left")
+
+#convert to sf 
+block_geo<-st_as_sf(block_geo)
+
+####transform bsc shapefile for leaflet
+
+block_geo<-st_transform(block_geo, CRS('+proj=longlat +datum=WGS84'))
+
+###define palettes
+
+pal_ozone <- colorNumeric("YlOrRd", domain = block_geo$ozone)
+
+pal_pm25<-colorNumeric("PuBu", domain = block_geo$pm25)
+
+
+
+
+#######Map#########
+
+
+leaflet(data=block_geo)%>%
+  
+   addMapPane("ozone", zIndex=485)%>%
+   addMapPane("pm25", zIndex=490)%>%
+
+  #ozone layer
+  
+  addPolygons(data=block_geo, weight=1.5, opacity = 1, color ="white" ,fillColor=~pal_ozone(as.numeric(ozone)), fillOpacity = .8,
+              group="ozone",
+              highlight=highlightOptions(color= "white", stroke = 2, weight = 3, bringToFront = TRUE), 
+              popup = ~paste0("Block Group: ",block_geo$geoid, "</br>", "Ozone Level: ",block_geo$ozone),
+              options = pathOptions(pane = "ozone")) %>%
+  #pm25 layer
+  
+    addPolygons(data=block_geo, weight=1.5, opacity = 1, color ="white" ,fillColor=~pal_pm25(pm25), fillOpacity = .6, group='pm25',
+              highlight=highlightOptions(color= "#8c8b8b", stroke = 2, weight = 3, bringToFront = TRUE), 
+              popup = ~paste0("Block Group: ",block_geo$geoid, "</br>", "PM 2.5 Level: ",block_geo$pm25),
+              options = pathOptions(pane = "pm25")) %>%
+
+  #base and view
+  addProviderTiles("CartoDB.Voyager")%>%
+  setView( -118.189352, 33.789868, zoom = 14)%>%
+  
+  #legend -ozone
+  addLegend(pal = pal_ozone, 
+            values = ~ozone,
+            opacity = 0.7,
+            position = "bottomright",
+            title="Ozone Level in the Air"
+  )%>%
+  #legend -pm25
+  addLegend(pal = pal_pm25, 
+            values = ~pm25,
+            opacity = 0.7,
+            position = "bottomleft",
+            title="PM 2.5 Level in the Air"
+  )%>%
+     #layer control
+    addLayersControl(overlayGroups =
+                       c("ozone", "pm25"), 
+                  options = layersControlOptions(collapsed = FALSE))%>%
+#hide pm25 layer by default
+  hideGroup("pm25")
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+```
 
 
 Education 
@@ -721,7 +840,8 @@ hc<-la_rates %>%
   rename(Percent = JAN2019_DEC2019) %>%
   mutate(group = "Incidence of Maltreatment per 1K") %>%
   arrange(desc(Percent)) %>%
-  hchart('column', hcaes(x = 'Race', y = 'Percent', group = group),  tooltip = list(pointFormat = "Percentage: {point.value:,.1f}%"))%>%
+  hchart('column', hcaes(x = 'Race', y = 'Percent', group = group),  tooltip = list(pointFormat = "Percentage: {point.Percent:,.1f}%"))%>%
+  hc_tooltip(crosshairs=TRUE)%>%
   hc_title(
     text = "Black children are at least 2.5 times more likely to maltreatment than children of other races in Los Angeles County",
     margin = 20,
