@@ -255,6 +255,7 @@ Column {data-width=300}
 ### About The Nonprofit Partnership.
 
 Our mission is to build the capacity of nonprofits so they can make positive change in their communities. Our vision is successful nonprofits supporting thriving communities.<br><br>
+
 ```{r out.width = "30%"}
 
 knitr::include_graphics("W:/Project/RDA Team/TNP/R/TNP_logo.png")
@@ -267,12 +268,93 @@ Overview
 
 Overview 
 -----------------------------------------------------------------------
-> Duis interdum ante mauris, scelerisque placerat magna dictum et. Suspendisse dignissim augue vel nisi consequat pulvinar. Sed dictum pretium dui, non fermentum nibh lacinia vitae. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Praesent sem urna, tincidunt vel porta quis, ornare eu leo. Quisque non tortor nec felis tempus hendrerit. Nunc vel urna risus.
+
+### Condition of Children Summary
+
+<br>Here is where we will describe the criteria we used to assess the condition of children Region 4. We will be comparing each of the indicators against the California and Los Angeles County rates, and assess wquity by calculating and comparing index ratios.<br><br>
 
 ```{r}
+library(formattable)
+
+#indicator vectors
+
+Health<-c("Uninsured Rate", "Prenatal Care", "Infant Mortality",  "Low Birth Weight", "Preterm Births", "Teen Births")
+
+Health_Status<-c("Better", "Worse", "Worse", "Better", "Worse", "Better")
+
+Built_Environment<-c("Asthma hospitalization",
+"Air Pollution", 
+"Public Transportation", 
+"Proximity to Hazards",
+"Park space",
+"Access to food") 
+
+BE_Status<-c("Worse", "Worse", "Worse", "Better", "Better", "Better")
+
+
+Education<-c("Pre-K/Infant Toddler ECE Access",
+"Access to Child Care Centers",
+"High School Graduation Rates",
+"College Readiness",
+"Chronic Absenteeism",
+"School suspensions"
+)
+
+
+Ed_Status<-c("Better", "Better", "Worse", "Better", "Better", "Better")
+
+
+Economic_Wellness<-c("Child Poverty",
+"Rent Burden",
+"Median Household Income", 
+"Supplemental Nutrition",
+"Internet Access",
+"Family Unemployment"
+)
+
+Econ_Status<-c("Better", "Worse", "Worse", "Better", "Better", "Worse")
+
+Child_Safety<-c("Preventable Child and Youth Death",
+"Substantiated Child Abuse",
+"Child Welfare",
+"Juvenile Arrests",
+"Use of Force",
+"Gun injuries and hospitalizations"
+)
+
+Safety_Status<-c("Better", "Better", "Better", "Better", "Worse", "Worse")
+
+test<-data.frame(Health, Health_Status, Built_Environment, BE_Status, Education, Ed_Status, Economic_Wellness,
+                 Econ_Status, Child_Safety, Safety_Status)
+
+
+test %>%
+  mutate(
+  Health_Status = cell_spec(Health_Status, color = ifelse(Health_Status== "Better","black", "black"),
+                  background = ifelse(Health_Status=="Better", "lightgreen", "lightpink"),
+                  bold=T)) %>%  
+   mutate( BE_Status = cell_spec(BE_Status, color = ifelse(BE_Status== "Better","black", "black"),
+                  background = ifelse(BE_Status=="Better", "lightgreen", "lightpink"),
+                  bold=T)) %>% 
+   mutate( Ed_Status = cell_spec(Ed_Status, color = ifelse(Ed_Status== "Better","black", "black"),
+                  background = ifelse(Ed_Status=="Better", "lightgreen", "lightpink"),
+                  bold=T)) %>% 
+  mutate(  Econ_Status = cell_spec(Econ_Status, color = ifelse(Econ_Status== "Better","black", "black"),
+                  background = ifelse(Econ_Status=="Better", "lightgreen", "lightpink"),
+                  bold=T)) %>% 
+  mutate(Safety_Status = cell_spec(Safety_Status, color = ifelse(Safety_Status== "Better","black", "black"),
+                  background = ifelse(Safety_Status=="Better", "lightgreen", "lightpink"),
+                  bold=T)) %>% 
+  kable(escape = F, col.names=c("", "", "", "", "", "", "","", "", "")) %>%
+  kable_styling(bootstrap_options = c( "hover", "condensed", "bordered"), full_width = F)%>%
+    add_header_above(c("Health" = 2, "Built Environment" = 2, "Education" = 2, "Economic Wellness" = 2, "Child Safety"=2))%>%
+    column_spec(1, width = "3cm")
+
+
 
 
 ```
+
 
 Column {data-width=300}
 -----------------------------------------------------------------------
