@@ -623,7 +623,6 @@ Built Environment
 Description about why built environment indicators are important especially given the location of Central Long Beach and its proximity to severe pollutants. Would also love some root cause analysis here to elevate environmental inequities that exist and the history of activism in this area to improve air quality. 
 
 ```{r}
-avg<-dbGetQuery(con, "SELECT * FROM epa_airpollution_avg_lbla_2019")
 
 # pull in the epa data by block group
 
@@ -674,6 +673,35 @@ pal_ozone <- colorNumeric("YlOrRd", domain = block_geo$ozone)
 pal_pm25<-colorNumeric("PuBu", domain = block_geo$pm25)
 
 
+####BSC layer for the label############
+
+bsc<-pgGetGeom(con, query="SELECT * FROM f5la_best_start_geographies where best_start ilike 'Central Long Beach' or 
+         best_start ilike 'Wilmington'")
+
+#convert to sf 
+bsc<-st_as_sf(bsc)
+
+####transform bsc shapefile for leaflet
+
+bsc<-st_transform(bsc, CRS('+proj=longlat +datum=WGS84'))
+
+####Add XY coordinates to bsc spatial df
+
+## find centroid coordinates
+bsc_cnt = st_centroid(bsc)
+bsc_crd = data.frame(st_coordinates(bsc_cnt))
+
+#add ID column to each df and spatial df for joining
+bsc$ID <- seq.int(nrow(bsc))
+bsc_crd$ID <- seq.int(nrow(bsc_crd))
+
+##join spatial frame with data frame to get the XY columns into the spatial frame
+
+bsc<-geo_join(bsc, bsc_crd, 'ID', 'ID',
+              how = "left")
+
+#create label 
+bsc_label<-paste(bsc$best_start)
 
 
 #######Map#########
@@ -683,6 +711,8 @@ leaflet(data=block_geo)%>%
   
    addMapPane("ozone", zIndex=485)%>%
    addMapPane("pm25", zIndex=490)%>%
+    addMapPane("bsc", zIndex=490)%>%
+
 
   #ozone layer
   
@@ -697,6 +727,13 @@ leaflet(data=block_geo)%>%
               highlight=highlightOptions(color= "#8c8b8b", stroke = 2, weight = 3, bringToFront = TRUE), 
               popup = ~paste0("Block Group: ",block_geo$geoid, "</br>", "PM 2.5 Level: ",block_geo$pm25),
               options = pathOptions(pane = "pm25")) %>%
+  
+  #bsc labels
+  addLabelOnlyMarkers(data=bsc,  ~X, ~Y, label =  ~as.character(bsc_label), 
+  labelOptions = labelOptions(noHide= T, direction = 'top', textOnly = T,
+                              style=list("font-size"="14px", 
+                                         "color"="black", 
+                                         "font-weight" = "bold")))%>%
 
   #base and view
   addProviderTiles("CartoDB.Voyager")%>%
