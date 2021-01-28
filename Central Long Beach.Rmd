@@ -271,7 +271,7 @@ Overview
 
 ### Condition of Children Summary
 
-<br>Here is where we will describe the criteria we used to assess the condition of children Region 4. We will be comparing each of the indicators against the California and Los Angeles County rates, and assess wquity by calculating and comparing index ratios.<br><br>
+<br>Here is where we will describe the criteria we used to assess the condition of children Region 4. We will be comparing each of the indicators against the California and Los Angeles County rates, and assess equity by calculating and comparing index ratios.<br><br>
 
 ```{r}
 library(formattable)
