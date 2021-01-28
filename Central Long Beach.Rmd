@@ -267,9 +267,7 @@ Overview
 
 ### Condition of Children Summary
 
-<br>Here is where we will describe the criteria we used to assess the condition of children Region 4. We will be comparing each of the indicators against the California and Los Angeles County rates, and assess equity by calculating and comparing index ratios.
-
-The State of children in Long Beach is good|fair|poor based on the summary of each bucket of metrics (e.g., built environment (based on # of better) is fair or poor and child safety is better...)<br><br>
+<br>Here is where we will describe the criteria we used to assess the condition of children Region 4. We will be comparing each of the indicators against the California and Los Angeles County rates, and assess equity by calculating and comparing index ratios.<br><br>
 
 ```{r}
 library(formattable)
