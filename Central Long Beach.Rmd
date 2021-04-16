@@ -29,6 +29,7 @@ library(DT)
 library(kableExtra)
 library(RColorBrewer)
 library(viridis)
+library(ggplot2)
 
 
 knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
@@ -160,7 +161,7 @@ leaflet(data=bsc)%>%
 
   #bsc layer
   
-  addPolygons(data=bsc, color="#79D9B6", weight=1.5, opacity = 0, fillOpacity = .4,
+  addPolygons(data=bsc, color="#79D9B6", weight=3, opacity = 1, fillOpacity = .2,
                label=as.character(bsc$best_start)) %>%
   
   addLabelOnlyMarkers(data=bsc,  ~X, ~Y, label =  ~as.character(bsc_label), 
@@ -168,7 +169,7 @@ leaflet(data=bsc)%>%
                               style=list("font-size"="12px", "color"="black", "font-weight" = "bold")))%>%
   
   #base and view
-  addProviderTiles("CartoDB.Voyager")%>%
+  addProviderTiles("CartoDB.Positron")%>%
   setView( -118.189352, 33.789868, zoom = 14)
   
 ```
@@ -333,10 +334,10 @@ Demographics {data-width=500}
 
 ```{r, fig.height=5, fig.width=5}
 
-children<-dbGetQuery(con, "SELECT * FROM ct_youngchildren_2018")
+children<-dbGetQuery(con, "SELECT * FROM ct_youngchildren_2019")
 
 
-hc<-children%>%
+children%>%
   hchart(type = "bar", hcaes(x = best_start , y = pct_under_five),
     tooltip = list(pointFormat = "Percentage of Children Age 0-5: {point.pct_under_five:,.1f}%<br>
     Number of Children Age 0-5: {point.num_under_five:,.0f}"))%>%
@@ -350,15 +351,12 @@ hc<-children%>%
     style = list(useHTML = TRUE, fontWeight="bold")
     )%>%
   hc_subtitle(
-    text =  '<a href="https://data.census.gov/cedsci/">ACS 2018 5-Year Estimates</a>',
+    text =  '<a href="https://data.census.gov/cedsci/">ACS 2019 5-Year Estimates</a>',
      style = list( fontWeight = "bold"),
     align = "left"
   )%>% 
-  hc_legend(enabled = FALSE)
-
-#view graph
-
- hc_add_theme(hc, thm)
+  hc_legend(enabled = FALSE)%>%
+  hc_add_theme(thm)
 
 
 ```
@@ -372,7 +370,7 @@ Column {data-width=450}
 
 ```{r}
 
-race<-dbGetQuery(con, "SELECT * FROM ct_raceethnicity_2018")
+race<-dbGetQuery(con, "SELECT * FROM ct_raceethnicity_2019")
 
 
 
@@ -392,30 +390,24 @@ race_clb <- gather(race, measure, value, num_white:pct_twoormore, factor_key=TRU
 
 #tree map
 
-
-
-
-hc<-race_clb%>%
+race_clb%>%
   hchart(type = "treemap", hcaes(x = variable, value = value, color=value),
    tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
       hc_tooltip(crosshairs = TRUE)%>%
    hc_colorAxis(stops = color_stops(colors = c("#344859", "#C2F2ED", "#1FBF84","#79D9B6")))%>% 
      hc_title(
-    text = "61.3% of families in Central Long Beach are Hispanic/Latinx. The second largest group of families are Asian at 14%",
+    text = "60.9% of families in Central Long Beach are Hispanic/Latinx. The second largest group of families are Asian at 13.5%",
     margin = 20,
     align = "left",
     style = list(useHTML = TRUE, fontWeight="bold")
     )%>%
    hc_subtitle(
-    text =  '<a href="https://data.census.gov/cedsci/">ACS 2018 5-Year Estimates</a>',
+    text =  '<a href="https://data.census.gov/cedsci/">ACS 2019 5-Year Estimates</a>',
      style = list( fontWeight = "bold"),
     align = "left"
   )%>%
-  hc_legend(enabled = FALSE)
-
-#view graph
-
-hc_add_theme(hc, thm)
+  hc_legend(enabled = FALSE)%>%
+hc_add_theme(thm)
 
 ```
 
@@ -436,8 +428,7 @@ race_lac <- gather(race, measure, value, num_white:pct_twoormore, factor_key=TRU
                                                                    ifelse(measure %in% 'pct_twoormore', "Two or more Races", "Blank")))))))))
 
 
-
-hc<-race_lac%>%
+race_lac%>%
   hchart(type = "treemap", hcaes(x = variable, value =value, color = value),
          tooltip = list(pointFormat = "{point.variable} Percentage: {point.value:,.1f}%"))%>%
       hc_tooltip(crosshairs = TRUE)%>%
@@ -453,12 +444,8 @@ hc<-race_lac%>%
      style = list( fontWeight = "bold"),
     align = "left"
   )%>%
-  hc_legend(enabled = FALSE)
-
-
-#view graph with theme
-
-hc_add_theme(hc, thm)
+  hc_legend(enabled = FALSE)%>%
+hc_add_theme(thm)
 
 
 ```
@@ -513,7 +500,7 @@ uninsured_clb<-uninsured%>%
                          ifelse(measure %in% 'tot_uninsured', 'Total Number of Uninsured Households', 'Blank')))
 
 
-hc<-uninsured_clb %>%
+uninsured_clb %>%
   hchart(
     "pie", hcaes(x = variable, y = value),
     name = "Uninsured Population in Central Long Beach",
@@ -531,13 +518,8 @@ hc<-uninsured_clb %>%
     text =  '<a href="https://data.census.gov/cedsci/">ACS 2018 5-Year Estimates</a>',
      style = list( fontWeight = "bold"),
     align = "left"
-  )
-
-
-
-#view graph
-
- hc_add_theme(hc, thm)
+  )%>%
+ hc_add_theme(thm)
 
 
 ```
@@ -708,6 +690,18 @@ Education
 Column {data-height=900}
 -------------------------------------
 
+
+### California Department of Social Services (CDSS)
+
+```{r}
+
+
+valueBox("0 Open and 2 Closed", "Licensed Child Care Centers or Family Child Care Homes in Central Long Beach",
+         href="https://www.ccld.dss.ca.gov/carefacilitysearch/DownloadData",
+         color="#79D9B6")
+```
+
+
 ### Unmet Need in Early Childcare Education (ECE) for Infant Toddlers
 
 ```{r}
@@ -755,6 +749,36 @@ hc<-ece_it %>%
 #view graph
 
  hc_add_theme(hc, thm)
+ 
+ ###ggplot version
+ 
+ ece_it_lac<-dbGetQuery(con, "SELECT * FROM zip_unmet_ece_it_2018")%>%
+  gather(measure, value, children_it:pct_unmet_need_children_it)%>%
+  filter(!grepl("pct", measure))%>%
+  filter(!grepl("unmet_need_children_it", measure))%>%
+  mutate(variable=ifelse(measure %in% 'children_it', 'Total Children',
+                         ifelse(measure %in% 'enrolled_children_it', 'Total Enrolled',
+                                ifelse(measure %in% 'eligible_children_it', 'Total Eligible', 'Blank'))))
+  
+
+
+
+
+#get order correct for stacking
+# ece_it_lac <- within(ece_it_lac, variable <- factor(variable,
+#                                            levels=c("Total Children","Total Enrolled", "Total Eligible")))
+# 
+# 
+#  ggplot(ece_it, aes(fill=variable, y=value, x=best_start)) + 
+#     geom_bar(position="stack", stat="identity")+
+#     xlab("")+
+#   ylab("")+
+#   labs(title="Percentage of Students Prepared for College by Race")+
+#   theme(legend.title = element_blank(),
+#         axis.text.x=element_blank(),
+#         axis.ticks.x=element_blank(),
+#        
+#        plot.title= element_text(hjust = 0.5))
 
 
 
@@ -940,7 +964,7 @@ hc<-force%>%
   hc_xAxis(title = list(text = ""))%>%
     hc_yAxis(title = list(text = "Average Number of Civilians Injured in Law Enforcement Incidents per 100k People"))%>%
   hc_title(
-    text = "A black person is 7 times more likely to be injured in law enforcement incidents compared to an Asian Pacific Islander person",
+    text = "A Black individual is 6 times more likely to be injured in law enforcement incidents compared to a White indivdiual",
     margin = 20,
     align = "left",
     style = list(useHTML = TRUE, fontWeight="bold")
