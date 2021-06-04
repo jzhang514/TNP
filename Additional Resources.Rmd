@@ -3,28 +3,48 @@ title: "Additional Resources Page"
 output:
   html_document:
     number_sections: no
+    theme: paper
     css: styles.css
-    theme: flatly
     toc: yes
     toc_depth: 2
     toc_float: yes
   pdf_document:
     toc: yes
     toc_depth: '2'
+
+    
 ---
 
-<style type="text/css">
-  body{
-  font-family: Franklin Gothic;
-}
-</style>
 
 ```{r setup, include=FALSE}
+### Set up workspace ####
+#install.packages("extrafont")
+library(extrafont)
+library(here)
 library(dplyr)
-library(highcharter)
-library(knitr)
+library(data.table)
+library(tidycensus)
+library(sf)
+library(ggplot2)
+library(RPostgreSQL)
+library(formattable)
+library(svglite)
 library(stringr)
-library(tidyverse)
+library(tidyr)
+library(showtext)
+library(scales)
+library(kableExtra)
+#install.packages("flextable")
+library(flextable)
+library(DT)
+options(scipen=999)
+
+# loads the PostgreSQL driver
+drv <- dbDriver("PostgreSQL")
+
+con <- dbConnect(drv, dbname = "tnp",
+                   host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                   user = "postgres", password = "password")
 
 knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
 )
@@ -32,32 +52,162 @@ knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
 setwd("W:/Project/RDA Team/TNP/R")
 ```
 
+```{r, include=FALSE}
+## FONTS ##
+# Step 1: Download fonts (Gotham Bold and Gotham Book) 
+# Step 2: Load the downloaded fonts into the R script:
+# General: See tutorial here, under "THE SHOWTEXT PACKAGE" section: https://r-coder.com/custom-fonts-r/#The_showtext_package 
+# Step 3: Run the code below in each R script
+
+font_add(family = "GothamBold", regular = "C:/Windows/Fonts/Gotham-Bold 700.otf")
+font_add(family = "GothamBook", regular = "C:/Windows/Fonts/Gotham-Book 325.otf")
+
+showtext_auto()
+
+# define fonts in chart
+font_title <- "GothamBold"
+font_subtitle <- "GothamBook"
+font_caption <- "GothamBook"
+font_bar_label <- "GothamBold"
+font_axis_label <- "GothamBook"
+font_table_text<-"GothamBook"
+```
+
 This page is a hub of existing resources that provide data and stories on six topic areas surrounding child wellness: Demographics, Health, Built Environment, Education, Economic Wellness and Child Safety. Centralizing data makes it easier to draw connections between these different topic areas, all of which exist in relation to each other and require investment and in order for children to truly thrive. Drawing the connections is how we can paint a holistic picture of child wellness.
 
-# Demographics
 
-## Data 
+
+# Data Methodology
 
 ```{r}
-library(kableExtra)
+#one giant DT for all visuals
 
-Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
+library(readxl)
+
+table<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx")
+
+datatable(table, 
+          rownames = FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'print', 'excel')))
 
 
-Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
+```
 
-Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
+# Geography Crosswalks 
+
+Calculations for visualizations in this project were created by Advancement Project California. Visualizations are presented at various geographic levels for the Central Long Beach and Wilmington Best Start Geographies. Below you will find the crosswalk for the geography calculations Advancement Project made to analyze data at the Central Long Beach and Wilmington Best Start Geography level. 
+
+## Zip Code Crosswalk
+
+```{r}
+# SAVE for a cute zip code map ?! 
 
 
-Year<-c("2018", "2019", "2017", "2017")
+```
+
+```{r}
+###zip crosswalk TABLE
+
+zip<-dbGetQuery(con, "SELECT * FROM reg4_zip_crosswalk")%>%
+  select(1,4)
+
+# zip%>%
+#   kbl(col.names=c("Best Start", "Zip Code"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = T))
+
+datatable(zip, colnames = c("Best Start", "Zip Code"),
+          rownames = FALSE,
+          # options = list(
+          #   columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'print', 'excel')))
+
+
+```
+
+## PUMA Crosswalk
+
+```{r}
+
+#SAVE for cute puma best start map?
+
+
+```
+
+```{r}
+puma<-dbGetQuery(con, "SELECT * FROM reg4_puma_crosswalk")%>%
+  select(1,3,4)
+
+# puma%>%
+#   kbl(col.names=c("Best Start", "GEOID", "PUMA"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+
+datatable(puma, colnames = c("Best Start", "GEOID", "PUMA"),
+          rownames = FALSE,
+           # options = list(
+           #  columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'print', 'excel')))
+
+```
+
+## Census Tract Crosswalk
+
+
+```{r}
+ct<-dbGetQuery(con, "SELECT * FROM reg4_ct_crosswalk")%>%
+  mutate(name_full=paste0('Census Tract ',name))%>%
+  select(1,7,12)
+
+# ct%>%
+#   kbl(col.names=c("Best Start", "GEOID", "Census Tract"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+datatable(ct, colnames = c("Best Start", "GEOID", "Census Tract"),
+          rownames = FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'print', 'excel')))
+
+  
+
+```
+
+
+```{r include=FALSE}
+
+###OLD VERSION###
+
+
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Language Spoken", "Nativity Status by Race", "Family Composition" )
+
+
+Description<-c("Race and ethnicity of children Age 0 to 5", 
+               "Number and percentage of children Age 0 to 5",
+               "Language spoken among children Age 0 to 5",
+               "Family head of households born inside and outside of the US by race",
+               "Families with married, single male or single female head of households")
+
+Geography<-c("Region 4","Region 4","Region 4","Region 4","Region 4")
+
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "American Census Survey (ACS)", "PUMS", "American Census Survey (ACS)")
+
+
+Year<-c("2019","2019","2019","2019","2019")
 
 
 url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
     "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
     "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
-    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100",
+       "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" )
 
-table<-data.frame(Topic, Description, Source, Year)
+table<-data.frame(Topic, Description,Geography, Source, Year)
 
 #make table
 
@@ -77,211 +227,5 @@ table %>%
 
 ```
 
-## Stories (Placeholder)
 
 
-# Health
-
-```{r}
-Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
-
-
-Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
-
-Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
-
-
-Year<-c("2018", "2019", "2017", "2017")
-
-
-url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
-    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
-    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
-    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
-
-table<-data.frame(Topic, Description, Source, Year)
-
-#make table
-
-table %>% 
-  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
-  kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
-  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
-  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
-
-
-
-
-# * [Covid-19 Race Class Analysis in Los Angeles County](https://www.racecounts.org/covid/)
-# https://healthyplacesindex.org/data-reports/
-
-```
-
-
-## Stories (Placeholder)
-
-# Built Environment
-
-```{r}
-Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
-
-
-Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
-
-Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
-
-
-Year<-c("2018", "2019", "2017", "2017")
-
-
-url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
-    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
-    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
-    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
-
-table<-data.frame(Topic, Description, Source, Year)
-
-#make table
-
-table %>% 
-  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
-  kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
-  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
-  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
-
-
-
-# * [City of Long Beach Flood Zones](https://datalb.longbeach.gov/datasets/3aff2dbcf9bc43ba97a3bf5aa90d82ae_7)
-#* SmartairLA Page
-
-```
-
-
-## Stories (Placeholder)
-
-# Education
-
-```{r}
-Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
-
-
-Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
-
-Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
-
-
-Year<-c("2018", "2019", "2017", "2017")
-
-
-url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
-    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
-    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
-    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
-
-table<-data.frame(Topic, Description, Source, Year)
-
-#make table
-
-table %>% 
-  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
-  kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
-  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
-  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
-
-
-
-
-
-# * [California Early Child Care Facilities Report (APCA)](https://www.advancementprojectca.org/ece-facilities)
-# * [Number of Licesned Day Care Center Slots per 1,000 Children age 0-5](https://www.lacounts.org/dataset/test-cdph-number-of-licensed-daycare-center-slots-per-1-000-children-aged-0-5-years)
-
-
-```
-
-
-## Stories (Placeholder)
-
-
-# Economic Wellness
-
-```{r}
-Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
-
-
-Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
-
-Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
-
-
-Year<-c("2018", "2019", "2017", "2017")
-
-
-url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
-    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
-    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
-    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
-
-table<-data.frame(Topic, Description, Source, Year)
-
-#make table
-
-table %>% 
-  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
-  kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
-  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
-  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
-
-
-
-#* [Long Beach Homeless Count](http://www.longbeach.gov/health/services/directory/homeless-services/homeless-count/)
-
-
-
-```
-
-
-## Stories (Placeholder)
-
-# Child Safety
-
-```{r}
-Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Racial Generation Gap", "Nativity and Ancestry" )
-
-
-Description<-c("Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae", "Morbi nulla lacus, hendrerit sit amet erat vitae")
-
-Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "National Equity Atlas", "National Equity Atlas")
-
-
-Year<-c("2018", "2019", "2017", "2017")
-
-
-url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
-    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
-    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
-    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100")
-
-table<-data.frame(Topic, Description, Source, Year)
-
-#make table
-
-table %>% 
-  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
-  kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
-  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
-  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
-
-
-
-#* [City of Long Beach Crime Incidents](https://longbeachca.maps.arcgis.com/apps/webappviewer/index.html?id=da05d12e09104e598b6ebcace59f2bba)
-
-
-```
-
-
-## Stories (Placeholder)
