@@ -15,7 +15,6 @@ output:
     
 ---
 
-
 ```{r setup, include=FALSE}
 ### Set up workspace ####
 #install.packages("extrafont")
@@ -73,11 +72,12 @@ font_axis_label <- "GothamBook"
 font_table_text<-"GothamBook"
 ```
 
-This page is a hub of existing resources that provide data and stories on six topic areas surrounding child wellness: Demographics, Health, Built Environment, Education, Economic Wellness and Child Safety. Centralizing data makes it easier to draw connections between these different topic areas, all of which exist in relation to each other and require investment and in order for children to truly thrive. Drawing the connections is how we can paint a holistic picture of child wellness.
-
+This page is a hub of data resources that speak to the condition of children in the Central Long Beach and/or Wilmington area. Detailed methodological information for all the data points presented in the report and website can be found under the 'Data Methodology' and 'Crosswalk' sections of this page, and additional data that are not in the report or website but relevant to the conditions of children can be found in the 'Data Library' section. Data can be an empowering tool when it is democratized and put directly in the hands of change-agents. By providing this page, we hope that the information presented in the report will be better understood and more importantly, that partnering organizations and community members can easily explore the data themselves and tailor it to their own needs. 
 
 
 # Data Methodology
+
+This table contains the data source and methodology information for all of the data indicators that are present in the report and website. Clicking on the link o will navigate you to where in the website or report the indicator is. 
 
 ```{r}
 #one giant DT for all visuals
@@ -179,7 +179,11 @@ datatable(ct, colnames = c("Best Start", "GEOID", "Census Tract"),
 ```
 
 
-```{r include=FALSE}
+# Resource Library 
+
+## Health Data
+
+```{r}
 
 ###OLD VERSION###
 
@@ -219,13 +223,50 @@ table %>%
   pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
 
 
-# 
-# * [City of Long Beach Data Portal](https://datalb.longbeach.gov/)
-# * [LA Counts](https://www.lacounts.org/)
+```
 
+## Economic Data
+
+```{r}
+
+###OLD VERSION###
+
+
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Language Spoken", "Nativity Status by Race", "Family Composition" )
+
+
+Description<-c("Race and ethnicity of children Age 0 to 5", 
+               "Number and percentage of children Age 0 to 5",
+               "Language spoken among children Age 0 to 5",
+               "Family head of households born inside and outside of the US by race",
+               "Families with married, single male or single female head of households")
+
+Geography<-c("Region 4","Region 4","Region 4","Region 4","Region 4")
+
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "American Census Survey (ACS)", "PUMS", "American Census Survey (ACS)")
+
+
+Year<-c("2019","2019","2019","2019","2019")
+
+
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100",
+       "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" )
+
+table<-data.frame(Topic, Description,Geography, Source, Year)
+
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
 
 
 ```
-
 
 
