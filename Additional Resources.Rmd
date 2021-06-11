@@ -75,7 +75,7 @@ font_table_text<-"GothamBook"
 This page is a hub of data resources that speak to the condition of children in the Central Long Beach and/or Wilmington area. Detailed methodological information for all the data points presented in the report and website can be found under the 'Data Methodology' and 'Crosswalk' sections of this page, and additional data that are not in the report or website but relevant to the conditions of children can be found in the 'Data Library' section. Data can be an empowering tool when it is democratized and put directly in the hands of change-agents. By providing this page, we hope that the information presented in the report will be better understood and more importantly, that partnering organizations and community members can easily explore the data themselves and tailor it to their own needs. 
 
 
-# Data Methodology
+# Data in the Report
 
 This table contains the data source and methodology information for all of the data indicators that are present in the report and website. Clicking on the link o will navigate you to where in the website or report the indicator is. 
 
@@ -95,91 +95,8 @@ datatable(table,
 
 ```
 
-# Geography Crosswalks 
 
-Calculations for visualizations in this project were created by Advancement Project California. Visualizations are presented at various geographic levels for the Central Long Beach and Wilmington Best Start Geographies. Below you will find the crosswalk for the geography calculations Advancement Project made to analyze data at the Central Long Beach and Wilmington Best Start Geography level. 
-
-## Zip Code Crosswalk
-
-```{r}
-# SAVE for a cute zip code map ?! 
-
-
-```
-
-```{r}
-###zip crosswalk TABLE
-
-zip<-dbGetQuery(con, "SELECT * FROM reg4_zip_crosswalk")%>%
-  select(1,4)
-
-# zip%>%
-#   kbl(col.names=c("Best Start", "Zip Code"))%>%
-#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = T))
-
-datatable(zip, colnames = c("Best Start", "Zip Code"),
-          rownames = FALSE,
-          # options = list(
-          #   columnDefs = list(list(className = 'dt-center', targets = "_all")),
-  extensions = 'Buttons', options = list(
-    dom = 'Bfrtip',
-    buttons = c('copy', 'print', 'excel')))
-
-
-```
-
-## PUMA Crosswalk
-
-```{r}
-
-#SAVE for cute puma best start map?
-
-
-```
-
-```{r}
-puma<-dbGetQuery(con, "SELECT * FROM reg4_puma_crosswalk")%>%
-  select(1,3,4)
-
-# puma%>%
-#   kbl(col.names=c("Best Start", "GEOID", "PUMA"))%>%
-#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
-
-
-datatable(puma, colnames = c("Best Start", "GEOID", "PUMA"),
-          rownames = FALSE,
-           # options = list(
-           #  columnDefs = list(list(className = 'dt-center', targets = "_all")),
-  extensions = 'Buttons', options = list(
-    dom = 'Bfrtip',
-    buttons = c('copy', 'print', 'excel')))
-
-```
-
-## Census Tract Crosswalk
-
-
-```{r}
-ct<-dbGetQuery(con, "SELECT * FROM reg4_ct_crosswalk")%>%
-  mutate(name_full=paste0('Census Tract ',name))%>%
-  select(1,7,12)
-
-# ct%>%
-#   kbl(col.names=c("Best Start", "GEOID", "Census Tract"))%>%
-#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
-
-datatable(ct, colnames = c("Best Start", "GEOID", "Census Tract"),
-          rownames = FALSE,
-  extensions = 'Buttons', options = list(
-    dom = 'Bfrtip',
-    buttons = c('copy', 'print', 'excel')))
-
-  
-
-```
-
-
-# Resource Library 
+# Data Not in the Report
 
 ## Health Data
 
@@ -268,5 +185,91 @@ table %>%
 
 
 ```
+
+
+
+# Geography Crosswalks 
+
+Calculations for visualizations in this project were created by Advancement Project California. Visualizations are presented at various geographic levels for the Central Long Beach and Wilmington Best Start Geographies. Below you will find the crosswalk for the geography calculations Advancement Project made to analyze data at the Central Long Beach and Wilmington Best Start Geography level. 
+
+## Zip Code Crosswalk
+
+```{r}
+# SAVE for a cute zip code map ?! 
+
+
+```
+
+```{r}
+###zip crosswalk TABLE
+
+zip<-dbGetQuery(con, "SELECT * FROM reg4_zip_crosswalk")%>%
+  select(1,4)
+
+# zip%>%
+#   kbl(col.names=c("Best Start", "Zip Code"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = T))
+
+datatable(zip, colnames = c("Best Start", "Zip Code"),
+          rownames = FALSE,
+          # options = list(
+          #   columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'print', 'excel')))
+
+
+```
+
+## PUMA Crosswalk
+
+```{r}
+
+#SAVE for cute puma best start map?
+
+
+```
+
+```{r}
+puma<-dbGetQuery(con, "SELECT * FROM reg4_puma_crosswalk")%>%
+  select(1,3,4)
+
+# puma%>%
+#   kbl(col.names=c("Best Start", "GEOID", "PUMA"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+
+datatable(puma, colnames = c("Best Start", "GEOID", "PUMA"),
+          rownames = FALSE,
+           # options = list(
+           #  columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'print', 'excel')))
+
+```
+
+## Census Tract Crosswalk
+
+
+```{r}
+ct<-dbGetQuery(con, "SELECT * FROM reg4_ct_crosswalk")%>%
+  mutate(name_full=paste0('Census Tract ',name))%>%
+  select(1,7,12)
+
+# ct%>%
+#   kbl(col.names=c("Best Start", "GEOID", "Census Tract"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+datatable(ct, colnames = c("Best Start", "GEOID", "Census Tract"),
+          rownames = FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'print', 'excel')))
+
+  
+
+```
+
 
 
