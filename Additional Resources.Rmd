@@ -1,5 +1,5 @@
 ---
-title: "Additional Resources Page"
+title: Data Resources Page 
 output:
   html_document:
     number_sections: no
@@ -11,8 +11,6 @@ output:
   pdf_document:
     toc: yes
     toc_depth: '2'
-
-    
 ---
 
 ```{r setup, include=FALSE}
@@ -84,67 +82,41 @@ This table contains the data source and methodology information for all of the d
 
 library(readxl)
 
-table<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx")
+table<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="final")
 
 datatable(table, 
           rownames = FALSE,
+          
   extensions = 'Buttons', options = list(
     dom = 'Bfrtip',
+    pageLength=4, autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
     buttons = c('copy', 'print', 'excel')))
 
 
 ```
 
 
-# Data Not in the Report
-
-## Health Data
+# Additional Data Resources
 
 ```{r}
+table2<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="additional")
 
-###OLD VERSION###
-
-
-Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Language Spoken", "Nativity Status by Race", "Family Composition" )
-
-
-Description<-c("Race and ethnicity of children Age 0 to 5", 
-               "Number and percentage of children Age 0 to 5",
-               "Language spoken among children Age 0 to 5",
-               "Family head of households born inside and outside of the US by race",
-               "Families with married, single male or single female head of households")
-
-Geography<-c("Region 4","Region 4","Region 4","Region 4","Region 4")
-
-Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "American Census Survey (ACS)", "PUMS", "American Census Survey (ACS)")
+datatable(table2, 
+          rownames = FALSE, escape=FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
 
 
-Year<-c("2019","2019","2019","2019","2019")
-
-
-url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
-    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
-    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
-    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100",
-       "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" )
-
-table<-data.frame(Topic, Description,Geography, Source, Year)
-
-#make table
-
-table %>% 
-  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
-  kable("html", escape = FALSE, align="l") %>%
-  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
-  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
-  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
 
 
 ```
 
-## Economic Data
 
-```{r}
+```{r, include=FALSE}
 
 ###OLD VERSION###
 
@@ -192,13 +164,6 @@ table %>%
 
 Calculations for visualizations in this project were created by Advancement Project California. Visualizations are presented at various geographic levels for the Central Long Beach and Wilmington Best Start Geographies. Below you will find the crosswalk for the geography calculations Advancement Project made to analyze data at the Central Long Beach and Wilmington Best Start Geography level. 
 
-## Zip Code Crosswalk
-
-```{r}
-# SAVE for a cute zip code map ?! 
-
-
-```
 
 ```{r}
 ###zip crosswalk TABLE
@@ -216,6 +181,8 @@ datatable(zip, colnames = c("Best Start", "Zip Code"),
           #   columnDefs = list(list(className = 'dt-center', targets = "_all")),
   extensions = 'Buttons', options = list(
     dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
     buttons = c('copy', 'print', 'excel')))
 
 
@@ -245,6 +212,8 @@ datatable(puma, colnames = c("Best Start", "GEOID", "PUMA"),
            #  columnDefs = list(list(className = 'dt-center', targets = "_all")),
   extensions = 'Buttons', options = list(
     dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
     buttons = c('copy', 'print', 'excel')))
 
 ```
@@ -265,6 +234,8 @@ datatable(ct, colnames = c("Best Start", "GEOID", "Census Tract"),
           rownames = FALSE,
   extensions = 'Buttons', options = list(
     dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
     buttons = c('copy', 'print', 'excel')))
 
   
