@@ -1,0 +1,246 @@
+---
+title: Página de recursos de datos 
+output:
+  html_document:
+    number_sections: no
+    theme: paper
+    css: styles.css
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include=FALSE}
+### Set up workspace ####
+#install.packages("extrafont")
+library(extrafont)
+library(here)
+library(dplyr)
+library(data.table)
+library(tidycensus)
+library(sf)
+library(ggplot2)
+library(RPostgreSQL)
+library(formattable)
+library(svglite)
+library(stringr)
+library(tidyr)
+library(showtext)
+library(scales)
+library(kableExtra)
+#install.packages("flextable")
+library(flextable)
+library(DT)
+options(scipen=999)
+
+# loads the PostgreSQL driver
+drv <- dbDriver("PostgreSQL")
+
+con <- dbConnect(drv, dbname = "tnp",
+                   host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                   user = "postgres", password = "password")
+
+knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
+)
+
+setwd("W:/Project/RDA Team/TNP/R")
+```
+
+```{r, include=FALSE}
+## FONTS ##
+# Step 1: Download fonts (Gotham Bold and Gotham Book) 
+# Step 2: Load the downloaded fonts into the R script:
+# General: See tutorial here, under "THE SHOWTEXT PACKAGE" section: https://r-coder.com/custom-fonts-r/#The_showtext_package 
+# Step 3: Run the code below in each R script
+
+font_add(family = "GothamBold", regular = "C:/Windows/Fonts/Gotham-Bold 700.otf")
+font_add(family = "GothamBook", regular = "C:/Windows/Fonts/Gotham-Book 325.otf")
+
+showtext_auto()
+
+# define fonts in chart
+font_title <- "GothamBold"
+font_subtitle <- "GothamBook"
+font_caption <- "GothamBook"
+font_bar_label <- "GothamBold"
+font_axis_label <- "GothamBook"
+font_table_text<-"GothamBook"
+```
+
+Está página es un centro de recursos informativos acerca de la situación de los niños en las áreas de Central Long Beach y Wilmington. Puede encontrar información detallada de la metodología de todas las observaciones estadísticas que incluye este informe en las secciones “Metodología de datos” y “Matrices de referencia” de esta página. También puede encontrar información relevante que no aparece en el informe o en el sitio web en la sección “Biblioteca de datos”. Esta información puede ser una herramienta empoderadora si se democratiza y se pone a disposición de los agentes de cambio.  Esperamos que esta página haga que la información presentada en el informe sea más fácil de entender y que las organizaciones aliadas y los miembros de la comunidad puedan explorar fácilmente la información por sí solos y usarlos de acuerdo con sus necesidades.
+
+# Datos en el informe
+
+Esta tabla incluye las fuentes de datos y la información de la metodología de todos los indicadores que aparecen en este informe y en el sitio web. Hacer clic en el enlace lo llevará donde está el indicador en el sitio web o en el informe.
+
+```{r}
+#one giant DT for all visuals
+
+library(readxl)
+
+table<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="final_sp")
+
+table%>%
+  select(-2)%>%
+datatable(
+          rownames = FALSE,
+          
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    pageLength=4, autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+
+```
+
+
+# Recursos de datos adicionales
+
+```{r}
+table2<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="additional")
+
+datatable(table2, 
+          rownames = FALSE, escape=FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+
+
+
+```
+
+
+```{r, include=FALSE}
+
+###OLD VERSION###
+
+
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Language Spoken", "Nativity Status by Race", "Family Composition" )
+
+
+Description<-c("Race and ethnicity of children Age 0 to 5", 
+               "Number and percentage of children Age 0 to 5",
+               "Language spoken among children Age 0 to 5",
+               "Family head of households born inside and outside of the US by race",
+               "Families with married, single male or single female head of households")
+
+Geography<-c("Region 4","Region 4","Region 4","Region 4","Region 4")
+
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "American Census Survey (ACS)", "PUMS", "American Census Survey (ACS)")
+
+
+Year<-c("2019","2019","2019","2019","2019")
+
+
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100",
+       "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" )
+
+table<-data.frame(Topic, Description,Geography, Source, Year)
+
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+```
+
+
+
+# Matrices de referencia geográfica 
+
+Los cálculos para las visualizaciones fueron creados por Advancement Project California. Las imágenes incluyen varios niveles de las geografías de Best Start en Central Long Beach y Wilmington. Abajo encontrará la matriz de referencia de los cálculos geográficos que hizo Advancement Project para analizar las cifras en los niveles geográficos de Best Start de Central Long Beach y de Wilmington.
+
+```{r}
+###zip crosswalk TABLE
+
+zip<-dbGetQuery(con, "SELECT * FROM reg4_zip_crosswalk")%>%
+  select(1,4)
+
+# zip%>%
+#   kbl(col.names=c("Best Start", "Zip Code"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = T))
+
+datatable(zip, colnames = c("Best Start", "Zip Code"),
+          rownames = FALSE,
+          # options = list(
+          #   columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+
+```
+
+## PUMA Crosswalk
+
+```{r}
+
+#SAVE for cute puma best start map?
+
+
+```
+
+```{r}
+puma<-dbGetQuery(con, "SELECT * FROM reg4_puma_crosswalk")%>%
+  select(1,3,4)
+
+# puma%>%
+#   kbl(col.names=c("Best Start", "GEOID", "PUMA"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+
+datatable(puma, colnames = c("Best Start", "GEOID", "PUMA"),
+          rownames = FALSE,
+           # options = list(
+           #  columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+```
+
+## Census Tract Crosswalk
+
+
+```{r}
+ct<-dbGetQuery(con, "SELECT * FROM reg4_ct_crosswalk")%>%
+  mutate(name_full=paste0('Census Tract ',name))%>%
+  select(1,7,12)
+
+# ct%>%
+#   kbl(col.names=c("Best Start", "GEOID", "Census Tract"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+datatable(ct, colnames = c("Best Start", "GEOID", "Census Tract"),
+          rownames = FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+  
+
+```
+
+
+
