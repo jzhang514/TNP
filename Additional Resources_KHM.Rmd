@@ -1,0 +1,251 @@
+---
+title: ទំព័រធនធានបន្ថែម 
+output:
+  html_document:
+    number_sections: no
+    theme: paper
+    css: styles.css
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+```{r setup, include=FALSE}
+### Set up workspace ####
+#install.packages("extrafont")
+library(extrafont)
+library(here)
+library(dplyr)
+library(data.table)
+library(tidycensus)
+library(sf)
+library(ggplot2)
+library(RPostgreSQL)
+library(formattable)
+library(svglite)
+library(stringr)
+library(tidyr)
+library(showtext)
+library(scales)
+library(kableExtra)
+#install.packages("flextable")
+library(flextable)
+library(DT)
+options(scipen=999)
+
+# loads the PostgreSQL driver
+drv <- dbDriver("PostgreSQL")
+
+con <- dbConnect(drv, dbname = "tnp",
+                   host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                   user = "postgres", password = "password")
+
+knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
+)
+
+setwd("W:/Project/RDA Team/TNP/R")
+```
+
+```{r, include=FALSE}
+## FONTS ##
+# Step 1: Download fonts (Gotham Bold and Gotham Book) 
+# Step 2: Load the downloaded fonts into the R script:
+# General: See tutorial here, under "THE SHOWTEXT PACKAGE" section: https://r-coder.com/custom-fonts-r/#The_showtext_package 
+# Step 3: Run the code below in each R script
+
+font_add(family = "GothamBold", regular = "C:/Windows/Fonts/Gotham-Bold 700.otf")
+font_add(family = "GothamBook", regular = "C:/Windows/Fonts/Gotham-Book 325.otf")
+
+showtext_auto()
+
+# define fonts in chart
+font_title <- "GothamBold"
+font_subtitle <- "GothamBook"
+font_caption <- "GothamBook"
+font_bar_label <- "GothamBold"
+font_axis_label <- "GothamBook"
+font_table_text<-"GothamBook"
+```
+
+ទំព័រនេះ គឺជាមជ្ឈមណ្ឌលធនធាននៃទិន្នន័យ ដែលនិយាយអំពីស្ថានភាពកុមារនៅតំបន់ឡុងប៊ិចកណ្តាល និងវីលមីងតុន។ ព័ត៌មាននៃវិធីសាស្រ្តលម្អិតសម្រាប់ចំណុចទិន្នន័យទាំងអស់ ដែលបានបង្ហាញនៅក្នុងរបាយការណ៍ និងគេហទំព័រ អាចឃើញនូវផ្នែក ‘វិធីសាស្រ្តទិន្នន័យ’ និង ‘ផ្លូវឆ្លងកាត់ - Crosswalk’ នៃទំព័រនេះ។ ទិន្នន័យពាក់ព័ន្ធបន្ថែម ដែលមិនមាននៅក្នុងរបាយការណ៍ ឬគេហទំព័រ ដែលមើលឃើញនៅក្នុងផ្នែក ‘បណ្ណាល័យទិន្នន័យ’។ ទិន្នន័យអាចជាឧបករណ៍ផ្តល់សិទ្ធិអំណាច នៅពេលដែលវាត្រូវបានធ្វើវាអោយទៅជាលក្ខណៈប្រជាធិបតេយ្យ និងដាក់ដោយផ្ទាល់ នៅក្នុងដៃភ្នាក់ងារផ្លាស់ប្តូរ។ តាមរយៈការផ្តល់ទំព័រនេះ, យើងសង្ឃឹមថាព័ត៌មានដែលបានបង្ហាញនៅក្នុងរបាយការណ៍ នឹងងាយស្រួលយល់ ហើយអង្គការដៃគូរ និងសមាជិកសហគមន៍ អាចស្វែងយល់ពីទិន្នន័យដោយខ្លួនឯងបានយ៉ាងងាយស្រួល និងធ្វើការកែសម្រួលទៅតាមតម្រូវការរបស់ពួកគេ។
+
+
+# ទិន្នន័យនៅក្នុងរបាយការណ៍
+
+តារាងនេះមានប្រភពទិន្នន័យ និងព័ត៌មានវិធីសាស្រ្តសម្រាប់សូចនាករទិន្នន័យទាំងអស់ ដែលបង្ហាញនៅក្នុងរបាយការណ៍ និងគេហទំព័រ។ ការចុចលើតំណភ្ជាប់ នឹងនាំអ្នកទៅកាន់ទីកន្លែងណាដែលសូចនាករស្ថិតនៅលើគេហទំព័រឬនៅក្នុងរបាយការណ៍។
+
+```{r}
+#one giant DT for all visuals
+
+library(readxl)
+
+table<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="final_khm")
+
+#colnames = c("Indicator", "ភូមិសាស្ត្រ","ប្រភពទិន្នន័យ","កំណត់សំគាល់ទិន្នន័យ","Link to Indicator")
+
+table%>%
+  select(-2)%>%
+  select(-3)%>%
+datatable(rownames = FALSE, 
+          
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    pageLength=4, autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+
+```
+
+
+# Additional Data Resources
+
+```{r}
+table2<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="additional")
+
+datatable(table2, 
+          rownames = FALSE, escape=FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+
+
+
+```
+
+
+```{r, include=FALSE}
+
+###OLD VERSION###
+
+
+Topic<-c("Race and Ethnicity", "Children Age 0 to 5", "Language Spoken", "Nativity Status by Race", "Family Composition" )
+
+
+Description<-c("Race and ethnicity of children Age 0 to 5", 
+               "Number and percentage of children Age 0 to 5",
+               "Language spoken among children Age 0 to 5",
+               "Family head of households born inside and outside of the US by race",
+               "Families with married, single male or single female head of households")
+
+Geography<-c("Region 4","Region 4","Region 4","Region 4","Region 4")
+
+Source<-c("American Census Survey (ACS)", "American Census Survey (ACS)", "American Census Survey (ACS)", "PUMS", "American Census Survey (ACS)")
+
+
+Year<-c("2019","2019","2019","2019","2019")
+
+
+url<-c("https://advancementproject.sharepoint.com/:x:/s/Portal/Ea-6aINlRjdJuWZ_PV9gHw0BbFf4ulpe5liG7S_7U8eqYg?e=gAGe47",
+    "https://advancementproject.sharepoint.com/:x:/s/Portal/Ec7LfN3gvjdEuF66wHATGYkBTYWI6L1lntsgGgmCnP3Xbg?e=rp7FcS",
+    "https://nationalequityatlas.org/indicators/Racial_generation_gap#/?geo=06000000000006037",
+    "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100",
+       "https://nationalequityatlas.org/indicators/Nativity-and-ancestry#/?geo=03000000000031100" )
+
+table<-data.frame(Topic, Description,Geography, Source, Year)
+
+#make table
+
+table %>% 
+  mutate(Dataset = cell_spec(("Data link"), "html", link = url)) %>%
+  kable("html", escape = FALSE, align="l") %>%
+  kable_styling(bootstrap_options = c("hover", "condensed", "striped"), full_width=F)%>%
+  pack_rows("Zip Code Level", 1, 2, label_row_css = "background-color: #1BBF91; color: #fff;")%>%
+  pack_rows("City Level", 3, 4, label_row_css = "background-color: #1BBF91; color: #fff;")
+
+
+```
+
+
+
+# ផ្លូវឆ្លងកាត់ភូមិសាស្ត្រ
+
+Advancement Project California បានបង្កើតនូវការគណនាសម្រាប់ការមើលឃើញ ឬដោយរបកគំហើញ។ ការមើលឃើញ ត្រូវបានបង្ហាញនៅកម្រិតភូមិសាស្ត្រផ្សេងៗគ្នា សម្រាប់ភូមិសាស្ត្របេសស្តាតឡុងប៊ិចកណ្តាល និងភូមិសាស្ត្របេសស្តាតវីលមីងតុន។ ខាងក្រោមនេះ អ្នកនឹងឃើញផ្លូវឆ្លងកាត់ សម្រាប់ការគណនាភូមិសាស្ត្រ របស់ Advancement Project ដែលបានបង្កើតឡើង ដើម្បីធ្វើការវិភាគទិន្នន័យ នៅកម្រឹតភូមិសាស្ត្របេសស្តាតឡុងប៊ិចកណ្តាល និងបេសស្តាតវីលមីងតុន។
+
+## Zip Code Crosswalk
+
+```{r}
+###zip crosswalk TABLE
+
+zip<-dbGetQuery(con, "SELECT * FROM reg4_zip_crosswalk")%>%
+  select(1,4)
+
+# zip%>%
+#   kbl(col.names=c("Best Start", "Zip Code"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = T))
+
+datatable(zip, colnames = c("Best Start", "Zip Code"),
+          rownames = FALSE,
+          # options = list(
+          #   columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+
+```
+
+## PUMA Crosswalk
+
+```{r}
+
+#SAVE for cute puma best start map?
+
+
+```
+
+```{r}
+puma<-dbGetQuery(con, "SELECT * FROM reg4_puma_crosswalk")%>%
+  select(1,3,4)
+
+# puma%>%
+#   kbl(col.names=c("Best Start", "GEOID", "PUMA"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+
+datatable(puma, colnames = c("Best Start", "GEOID", "PUMA"),
+          rownames = FALSE,
+           # options = list(
+           #  columnDefs = list(list(className = 'dt-center', targets = "_all")),
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+```
+
+## Census Tract Crosswalk
+
+
+```{r}
+ct<-dbGetQuery(con, "SELECT * FROM reg4_ct_crosswalk")%>%
+  mutate(name_full=paste0('Census Tract ',name))%>%
+  select(1,7,12)
+
+# ct%>%
+#   kbl(col.names=c("Best Start", "GEOID", "Census Tract"))%>%
+#     kable_styling(bootstrap_options = c("striped", "hover","condensed","responsive", full_width = F))
+
+datatable(ct, colnames = c("Best Start", "GEOID", "Census Tract"),
+          rownames = FALSE,
+  extensions = 'Buttons', options = list(
+    dom = 'Bfrtip',
+    autoWidth=TRUE,
+      columnDefs = list(list(className = 'dt-center', targets = "_all")),
+    buttons = c('copy', 'print', 'excel')))
+
+  
+
+```
+
+
+
