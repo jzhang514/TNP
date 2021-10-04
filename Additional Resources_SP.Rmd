@@ -85,7 +85,7 @@ table<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="fi
 
 table%>%
   select(-2)%>%
-datatable(
+datatable(colnames=c("Indicador", "Geografía", "Fuente de datos", "Nota sobre los datos", "Link to website"),
           rownames = FALSE,
           
   extensions = 'Buttons', options = list(
