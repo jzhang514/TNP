@@ -84,7 +84,9 @@ library(readxl)
 
 table<-read_xlsx("W:/Project/RDA Team/TNP/R/Data Methodology DT.xlsx", sheet="final")
 
-datatable(table, 
+table%>%
+  select(-2)%>%
+datatable(
           rownames = FALSE,
           
   extensions = 'Buttons', options = list(
